@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package rentalmgmt;
+
+option go_package = "rental_easy.in/m/rentalmgmt";
+
+service Rental_Easy_Functionalities {
+    rpc CreateUser(NewUser) returns (UserId) {}
+    rpc CreateItem(NewItem) returns (ItemId) {}
+    rpc GetAllItems(Request) returns (Items) {}
+    rpc GetItem(ItemId) returns (DetailedItem) {}
+    rpc UpdateItem(DetailedItem) returns (ItemId) {}
+    // rpc GetAvailableDatesofItem(ItemId) returns (AvailableDates) {}
+    // rpc ListAllItems(Request) returns (Items) {}
+}
+
+
+//Create New User
+message NewUser {
+    string Name = 1;
+    string Email = 2;
+    string Phone_Number = 3;
+    string Address = 4;
+    string District = 5;
+    string Postal_Code = 6;
+    string Country = 7;
+}
+
+//Create New Item
+message NewItem {
+    string Name = 1;
+    string Description = 2;
+    string Category = 3;
+    string Available_From = 4;
+    string Available_To = 5;
+    int32 Amount_per_day = 6;
+    int32 UserID = 7;
+}
+
+//Get the Item Id
+message ItemId {
+    int32 id = 1;
+}
+
+//Get a Particular Item with all Details
+message DetailedItem {
+    int32 ID = 1;
+    string Name = 2;
+    string Description = 3;
+    string Category = 4;
+    string Available_From = 5;
+    string Available_To = 6;
+    int32 Amount_per_day = 7;
+    int32 UserID = 8;
+}
+
+//Get the User Id
+message UserId {
+    int32 id = 1;
+}
+
+//To Show the Available Dates
+message AvailableDates {
+    string Available_From = 1;
+    string Available_To = 2;
+}
+
+//For Displaying Each Item to User
+message Item {
+    int32 id = 1;
+    string Name = 2;
+    string Description = 3;
+    int32 Amount_per_day = 4;
+}
+
+//For Listing all the Items
+message Items {
+    repeated Item items=1;
+}
+//For Requesting
+message Request {
+    string request = 1;
+}
+
+message Profile {
+    int32 Id = 1;
+    string Name = 2;
+    string Email = 3;
+    string Phone_Number = 4;
+    string Address = 5;
+    string District = 6;
+    string Postal_Code = 7;
+    string Country = 8;
+}
