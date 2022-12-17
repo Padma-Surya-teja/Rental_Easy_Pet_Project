@@ -25,7 +25,7 @@ func Get_All_Items(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Conte
 	fmt.Println(Items)
 }
 
-func Get_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+func Get_Item_By_Id(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
 	Item, err := c.GetItem(ctx, &rental.ItemId{Id: 4})
 	checkErr(err)
 

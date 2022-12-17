@@ -25,7 +25,7 @@ type Rental_Easy_FunctionalitiesClient interface {
 	CreateUser(ctx context.Context, in *NewUser, opts ...grpc.CallOption) (*UserId, error)
 	CreateItem(ctx context.Context, in *NewItem, opts ...grpc.CallOption) (*ItemId, error)
 	GetAllItems(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Items, error)
-	GetItem(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error)
+	GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error)
 	UpdateItem(ctx context.Context, in *DetailedItem, opts ...grpc.CallOption) (*ItemId, error)
 }
 
@@ -64,9 +64,9 @@ func (c *rental_Easy_FunctionalitiesClient) GetAllItems(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *rental_Easy_FunctionalitiesClient) GetItem(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error) {
+func (c *rental_Easy_FunctionalitiesClient) GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error) {
 	out := new(DetailedItem)
-	err := c.cc.Invoke(ctx, "/rentalmgmt.Rental_Easy_Functionalities/GetItem", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/rentalmgmt.Rental_Easy_Functionalities/GetItemById", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ type Rental_Easy_FunctionalitiesServer interface {
 	CreateUser(context.Context, *NewUser) (*UserId, error)
 	CreateItem(context.Context, *NewItem) (*ItemId, error)
 	GetAllItems(context.Context, *Request) (*Items, error)
-	GetItem(context.Context, *ItemId) (*DetailedItem, error)
+	GetItemById(context.Context, *ItemId) (*DetailedItem, error)
 	UpdateItem(context.Context, *DetailedItem) (*ItemId, error)
 	mustEmbedUnimplementedRental_Easy_FunctionalitiesServer()
 }
@@ -107,8 +107,8 @@ func (UnimplementedRental_Easy_FunctionalitiesServer) CreateItem(context.Context
 func (UnimplementedRental_Easy_FunctionalitiesServer) GetAllItems(context.Context, *Request) (*Items, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllItems not implemented")
 }
-func (UnimplementedRental_Easy_FunctionalitiesServer) GetItem(context.Context, *ItemId) (*DetailedItem, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetItem not implemented")
+func (UnimplementedRental_Easy_FunctionalitiesServer) GetItemById(context.Context, *ItemId) (*DetailedItem, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetItemById not implemented")
 }
 func (UnimplementedRental_Easy_FunctionalitiesServer) UpdateItem(context.Context, *DetailedItem) (*ItemId, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateItem not implemented")
@@ -181,20 +181,20 @@ func _Rental_Easy_Functionalities_GetAllItems_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Rental_Easy_Functionalities_GetItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Rental_Easy_Functionalities_GetItemById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ItemId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(Rental_Easy_FunctionalitiesServer).GetItem(ctx, in)
+		return srv.(Rental_Easy_FunctionalitiesServer).GetItemById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/rentalmgmt.Rental_Easy_Functionalities/GetItem",
+		FullMethod: "/rentalmgmt.Rental_Easy_Functionalities/GetItemById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(Rental_Easy_FunctionalitiesServer).GetItem(ctx, req.(*ItemId))
+		return srv.(Rental_Easy_FunctionalitiesServer).GetItemById(ctx, req.(*ItemId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -237,8 +237,8 @@ var Rental_Easy_Functionalities_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Rental_Easy_Functionalities_GetAllItems_Handler,
 		},
 		{
-			MethodName: "GetItem",
-			Handler:    _Rental_Easy_Functionalities_GetItem_Handler,
+			MethodName: "GetItemById",
+			Handler:    _Rental_Easy_Functionalities_GetItemById_Handler,
 		},
 		{
 			MethodName: "UpdateItem",

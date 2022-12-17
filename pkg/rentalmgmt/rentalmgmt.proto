@@ -8,7 +8,7 @@ service Rental_Easy_Functionalities {
     rpc CreateUser(NewUser) returns (UserId) {}
     rpc CreateItem(NewItem) returns (ItemId) {}
     rpc GetAllItems(Request) returns (Items) {}
-    rpc GetItem(ItemId) returns (DetailedItem) {}
+    rpc GetItemById(ItemId) returns (DetailedItem) {}
     rpc UpdateItem(DetailedItem) returns (ItemId) {}
     // rpc GetAvailableDatesofItem(ItemId) returns (AvailableDates) {}
     // rpc ListAllItems(Request) returns (Items) {}
