@@ -8,9 +8,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Name         *string `gorm:"unique"`
+	Name         string
 	Email        string
-	Phone_Number string
+	Phone_Number *string `gorm:"unique"`
 	Address      string
 	District     string
 	Postal_Code  string

@@ -13,8 +13,10 @@ service Rental_Easy_Functionalities {
     rpc GetUserLeasedItems(UserId) returns (stream Item) {}
     rpc BookItem(Booking) returns (BookingId) {}
     rpc GetBookedItems(UserId) returns (stream BookedItems) {}
-    // rpc GetAvailableDatesofItem(ItemId) returns (AvailableDates) {}
-    // rpc ListAllItems(Request) returns (Items) {}
+    rpc AddReview(NewReview) returns (ReviewId) {}
+    rpc UpdateReview(Review) returns (ReviewId) {}
+    rpc DeleteReview(ReviewId) returns (ReviewId) {}
+    rpc GetAllReviews(ItemId) returns (stream Review) {}
 }
 
 
@@ -117,3 +119,24 @@ message BookedItems {
     string EndDate = 4;
     int32 TotalAmount = 5;
 }
+
+//REVIEWS RELATED
+message NewReview {
+    string Comment = 1;
+    int32 Rating = 2;
+    int32 UserId = 3;
+    int32 ItemId = 4;
+}
+
+message ReviewId{
+    int32 Id = 1;
+}
+
+message Review {
+    int32 Id = 1;
+    string Comment = 2;
+    int32 Rating = 3;
+    int32 UserId = 4;
+    int32 ItemId = 5;
+}
+

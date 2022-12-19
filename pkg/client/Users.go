@@ -17,10 +17,10 @@ func checkErr(err error) {
 
 // Creating a New User
 func Create_New_User(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	new_user_id, err := c.CreateUser(ctx, &rental.NewUser{Name: "Sai", Email: "Sai@gmail.com", Phone_Number: "8769800987", Address: "Secundrabad, Hyderabad", District: "Medchal", Postal_Code: "500106", Country: "India"})
+	new_user_id, err := c.CreateUser(ctx, &rental.NewUser{Name: "Mani", Email: "Mani@gmail.com", Phone_Number: "8769806577", Address: "Secundrabad, Hyderabad", District: "Medchal", Postal_Code: "500106", Country: "India"})
 	checkErr(err)
 	if new_user_id.Id == 0 {
-		panic("Please Change the Username")
+		panic("Phone Number Already Used")
 	}
 
 	fmt.Println("New User has been Created with Id : ", new_user_id.Id)
@@ -28,7 +28,7 @@ func Create_New_User(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Con
 
 // Booking an Item
 func Book_an_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	booking_id, err := c.BookItem(ctx, &rental.Booking{StartDate: "20/12/2022", EndDate: "22/12/2022", UserId: 5, ItemId: 1})
+	booking_id, err := c.BookItem(ctx, &rental.Booking{StartDate: "20/12/2022", EndDate: "22/12/2022", UserId: 4, ItemId: 1})
 	checkErr(err)
 	if booking_id.Id == 0 {
 		panic("Booking Failed")

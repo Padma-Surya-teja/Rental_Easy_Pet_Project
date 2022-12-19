@@ -34,5 +34,5 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	client.Booked_Items(c, ctx)
+	client.GetAllReviews(c, ctx)
 }

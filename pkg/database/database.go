@@ -14,6 +14,12 @@ type DataBase interface {
 	GetItemsofOwner(int) []models.Item
 	AddBooking(models.Booking) (id int)
 	GetBookings(int) []models.Booking
+	UserAlreadyBooked(int, int) bool
+	AddReview(models.Review) int
+	Update_Review(models.Review) int
+	UserAlreadyAddedReview(int, int) bool
+	DeleteReview(int) int
+	GetReviews(int) []models.Review
 }
 
 type DBClient struct {
@@ -72,4 +78,44 @@ func (db DBClient) GetBookings(id int) []models.Booking {
 	BookedItems := []models.Booking{}
 	db.Db.Find(&BookedItems, "user_id = ?", id)
 	return BookedItems
+}
+
+// Checking User Already Booked the Item Or not
+func (db DBClient) UserAlreadyBooked(userid int, itemid int) bool {
+	var booking = models.Booking{UserID: userid, ItemID: itemid}
+	db.Db.First(&booking)
+
+	return booking.ID != 0
+}
+
+func (db DBClient) AddReview(review models.Review) int {
+	db.Db.Create(&review)
+
+	return int(review.ID)
+}
+
+// Updating the Review
+func (db DBClient) Update_Review(review models.Review) int {
+	db.Db.Save(&review)
+
+	return int(review.ID)
+}
+
+func (db DBClient) UserAlreadyAddedReview(userid int, itemid int) bool {
+	var review = models.Review{UserID: userid, ItemID: itemid}
+	db.Db.First(&review)
+
+	return review.ID != 0
+}
+
+func (db DBClient) DeleteReview(reviewId int) int {
+	db.Db.Delete(&models.Review{}, reviewId)
+
+	return reviewId
+}
+
+func (db DBClient) GetReviews(item_id int) []models.Review {
+	Reviews := []models.Review{}
+	db.Db.Find(&Reviews, "item_id = ?", item_id)
+	return Reviews
 }
