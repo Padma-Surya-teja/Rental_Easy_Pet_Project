@@ -11,7 +11,7 @@ import (
 
 // Function to Add Review
 func Add_Review(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	new_review_id, err := c.AddReview(ctx, &rental.NewReview{Comment: "The Phone is simply Superb and Processor is super fast", Rating: 5, UserId: 4, ItemId: 1})
+	new_review_id, err := c.AddReview(ctx, &rental.Review{Comment: "The Laptop is simply Superb and Processor is super fast", Rating: 5, UserId: 7, ItemId: 4})
 
 	checkErr(err)
 

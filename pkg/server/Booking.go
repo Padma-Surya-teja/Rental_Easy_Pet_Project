@@ -2,31 +2,15 @@ package Services
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"strings"
 	"sync"
 	"time"
 
+	"rental_easy.in/m/pkg/Mail"
 	"rental_easy.in/m/pkg/models"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
 )
-
-func (S *ServerSideImplementation) CreateUser(ctx context.Context, in *rental.NewUser) (*rental.UserId, error) {
-	log.Printf("Creating a New User")
-	newUser := models.User{
-		Name:         in.Name,
-		Email:        in.Email,
-		Phone_Number: &in.Phone_Number,
-		Address:      in.Address,
-		District:     in.District,
-		Postal_Code:  in.Postal_Code,
-		Country:      in.Country,
-	}
-
-	response := S.Db.CreateUser(newUser)
-
-	return &rental.UserId{Id: int32(response)}, nil
-}
 
 func (S *ServerSideImplementation) BookItem(ctx context.Context, in *rental.Booking) (*rental.BookingId, error) {
 	startDate := Convert_to_String(strings.Split(in.GetStartDate(), "/"))
@@ -38,13 +22,18 @@ func (S *ServerSideImplementation) BookItem(ctx context.Context, in *rental.Book
 		ItemID:     int(in.ItemId),
 	}
 
-	response := S.Db.AddBooking(Booking)
+	booking_id := S.Db.AddBooking(Booking)
+	fmt.Println("Hello BookedItem")
 
-	return &rental.BookingId{Id: int32(response)}, nil
+	if booking_id != 0 {
+		Mail.Mail(S.Db.GetUserEmail(int(in.UserId)), S.Db.Get_Item_Name(int(in.ItemId)), in.GetStartDate(), in.GetEndDate())
+	}
+
+	return &rental.BookingId{Id: int32(booking_id)}, nil
 
 }
 
-func (S *ServerSideImplementation) GetBookedItems(in *rental.UserId, stream rental.Rental_Easy_Functionalities_GetBookedItemsServer) error {
+func (S *ServerSideImplementation) GetUserBookedItems(in *rental.UserId, stream rental.Rental_Easy_Functionalities_GetUserBookedItemsServer) error {
 	Bookings := S.Db.GetBookings(int(in.Id))
 
 	var wg sync.WaitGroup

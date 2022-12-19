@@ -6,10 +6,10 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	"rental_easy.in/m/pkg/Services"
 	"rental_easy.in/m/pkg/database"
 	"rental_easy.in/m/pkg/models"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
+	Services "rental_easy.in/m/pkg/server"
 )
 
 // declaring the port number

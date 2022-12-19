@@ -31,8 +31,8 @@ func main() {
 	defer connection.Close()
 	c := rental.NewRental_Easy_FunctionalitiesClient(connection)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	client.GetAllReviews(c, ctx)
+	client.Add_Review(c, ctx)
 }

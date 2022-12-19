@@ -5,15 +5,17 @@ package rentalmgmt;
 option go_package = "rental_easy.in/m/rentalmgmt";
 
 service Rental_Easy_Functionalities {
-    rpc CreateUser(NewUser) returns (UserId) {}
-    rpc CreateItem(NewItem) returns (ItemId) {}
-    rpc GetAllItems(Request) returns (Items) {}
+    rpc CreateUser(User) returns (UserId) {}
+    rpc UpdateUser(User) returns (UserId) {}
+    rpc CreateItem(Item) returns (ItemId) {}
+    rpc GetAllItems(Request) returns (stream Item) {}
     rpc GetItemById(ItemId) returns (Item) {}
     rpc UpdateItem(Item) returns (ItemId) {}
+    rpc DeleteItem(ItemId) returns (ItemId) {}
     rpc GetUserLeasedItems(UserId) returns (stream Item) {}
     rpc BookItem(Booking) returns (BookingId) {}
-    rpc GetBookedItems(UserId) returns (stream BookedItems) {}
-    rpc AddReview(NewReview) returns (ReviewId) {}
+    rpc GetUserBookedItems(UserId) returns (stream BookedItems) {}
+    rpc AddReview(Review) returns (ReviewId) {}
     rpc UpdateReview(Review) returns (ReviewId) {}
     rpc DeleteReview(ReviewId) returns (ReviewId) {}
     rpc GetAllReviews(ItemId) returns (stream Review) {}
@@ -23,22 +25,7 @@ service Rental_Easy_Functionalities {
 
 //USER'S SIDE
 //Create New User
-message NewUser {
-    string Name = 1;
-    string Email = 2;
-    string Phone_Number = 3;
-    string Address = 4;
-    string District = 5;
-    string Postal_Code = 6;
-    string Country = 7;
-}
-
-//Get the User Id
-message UserId {
-    int32 id = 1;
-}
-
-message Profile {
+message User {
     int32 Id = 1;
     string Name = 2;
     string Email = 3;
@@ -49,24 +36,13 @@ message Profile {
     string Country = 8;
 }
 
-message Booking {
-    string StartDate = 1;
-    string EndDate = 2;
-    int32 UserId = 3;
-    int32 ItemId = 4;
+//Get the User Id
+message UserId {
+    int32 id = 1;
 }
 
+
 //ITEM'S SIDE
-//Create New Item
-message NewItem {
-    string Name = 1;
-    string Description = 2;
-    string Category = 3;
-    string Available_From = 4;
-    string Available_To = 5;
-    int32 Amount_per_day = 6;
-    int32 UserID = 7;
-}
 
 //Get the Item Id
 message ItemId {
@@ -111,6 +87,12 @@ message BookingId{
     int32 Id = 1;
 }
 
+message Booking {
+    string StartDate = 1;
+    string EndDate = 2;
+    int32 UserId = 3;
+    int32 ItemId = 4;
+}
 //To Show the Booked Items
 message BookedItems {
     int32 Id = 1;
@@ -121,12 +103,6 @@ message BookedItems {
 }
 
 //REVIEWS RELATED
-message NewReview {
-    string Comment = 1;
-    int32 Rating = 2;
-    int32 UserId = 3;
-    int32 ItemId = 4;
-}
 
 message ReviewId{
     int32 Id = 1;

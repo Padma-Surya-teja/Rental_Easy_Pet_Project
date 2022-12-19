@@ -2,6 +2,7 @@ package Services
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -10,9 +11,10 @@ import (
 	rental "rental_easy.in/m/pkg/rentalmgmt"
 )
 
-func (S *ServerSideImplementation) AddReview(ctx context.Context, in *rental.NewReview) (*rental.ReviewId, error) {
+func (S *ServerSideImplementation) AddReview(ctx context.Context, in *rental.Review) (*rental.ReviewId, error) {
 	log.Printf("Creating a New Review")
 
+	fmt.Println(int(in.UserId), int(in.ItemId))
 	if !S.Db.UserAlreadyBooked(int(in.UserId), int(in.ItemId)) || S.Db.UserAlreadyAddedReview(int(in.UserId), int(in.ItemId)) {
 		return &rental.ReviewId{Id: 0}, nil
 	}

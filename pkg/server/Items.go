@@ -24,7 +24,7 @@ func Convert_to_String(array []string) []int {
 	return result
 }
 
-func (s *ServerSideImplementation) CreateItem(ctx context.Context, in *rental.NewItem) (*rental.ItemId, error) {
+func (s *ServerSideImplementation) CreateItem(ctx context.Context, in *rental.Item) (*rental.ItemId, error) {
 	log.Printf("Creating a new Item")
 	Avail_From := Convert_to_String(strings.Split(in.GetAvailable_From(), "/"))
 	Avail_To := Convert_to_String(strings.Split(in.GetAvailable_To(), "/"))
@@ -44,14 +44,31 @@ func (s *ServerSideImplementation) CreateItem(ctx context.Context, in *rental.Ne
 		Id: int32(response)}, nil
 }
 
-func (s *ServerSideImplementation) GetAllItems(ctx context.Context, in *rental.Request) (*rental.Items, error) {
-	Items := []*rental.Item{}
-	All_Items := s.Db.GetItems()
-	for _, Item := range All_Items {
-		Items = append(Items, &rental.Item{ID: int32(Item.ID), Name: Item.Name, Description: Item.Description, AmountPerDay: int32(Item.Amount_per_day)})
+func (s *ServerSideImplementation) GetAllItems(in *rental.Request, stream rental.Rental_Easy_Functionalities_GetAllItemsServer) error {
+	Received_Items := s.Db.GetItems()
+
+	var wg sync.WaitGroup
+	for _, Item := range Received_Items {
+		wg.Add(1)
+		go func(item models.Item) {
+			defer wg.Done()
+			time.Sleep(time.Duration(100) * time.Microsecond)
+			itm := rental.Item{
+				ID:             int32(item.ID),
+				Name:           item.Name,
+				Description:    item.Description,
+				Category:       item.Category,
+				Available_From: item.Available_From.String(),
+				Available_To:   item.Available_From.String(),
+				AmountPerDay:   int32(item.Amount_per_day),
+				UserID:         int32(item.UserID)}
+			err := stream.Send(&itm)
+			checkErr(err)
+		}(Item)
 	}
-	return &rental.Items{
-		Items: Items}, nil
+
+	wg.Wait()
+	return nil
 }
 
 func (s *ServerSideImplementation) GetItemById(ctx context.Context, in *rental.ItemId) (*rental.Item, error) {
@@ -114,4 +131,11 @@ func (s *ServerSideImplementation) GetUserLeasedItems(in *rental.UserId, stream 
 
 	wg.Wait()
 	return nil
+}
+
+func (S *ServerSideImplementation) DeleteItem(ctx context.Context, in *rental.ItemId) (*rental.ItemId, error) {
+
+	deletedItemId := S.Db.DeleteItem(int(in.Id))
+
+	return &rental.ItemId{Id: int32(deletedItemId)}, nil
 }
