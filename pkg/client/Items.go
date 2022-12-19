@@ -3,6 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
 
 	rental "rental_easy.in/m/pkg/rentalmgmt"
 )
@@ -26,7 +28,7 @@ func Get_All_Items(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Conte
 }
 
 func Get_Item_By_Id(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	Item, err := c.GetItem(ctx, &rental.ItemId{Id: 4})
+	Item, err := c.GetItemById(ctx, &rental.ItemId{Id: 2})
 	checkErr(err)
 
 	if Item.ID == 0 {
@@ -38,7 +40,7 @@ func Get_Item_By_Id(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Cont
 }
 
 func Update_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	Updated_Item_id, err := c.UpdateItem(ctx, &rental.DetailedItem{ID: 1, Name: "IqooNeo6", Description: "This phone has snapdragon 870 processor with nice camera", Category: "Mobile Phones", Available_From: "16/12/2022", Available_To: "30/12/2022", AmountPerDay: 500, UserID: 1})
+	Updated_Item_id, err := c.UpdateItem(ctx, &rental.Item{ID: 1, Name: "IqooNeo6", Description: "This phone has snapdragon 870 processor with nice camera", Category: "Mobile Phones", Available_From: "16/12/2022", Available_To: "30/12/2022", AmountPerDay: 500, UserID: 1})
 	checkErr(err)
 
 	if Updated_Item_id.Id == 0 {
@@ -46,4 +48,29 @@ func Update_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context
 	} else {
 		fmt.Println("Item has been Updated Successfully with Id : ", Updated_Item_id.Id)
 	}
+}
+
+func GetItemsofOwner(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	stream_of_items, err := c.GetUserLeasedItems(ctx, &rental.UserId{Id: 1})
+	checkErr(err)
+
+	done := make(chan bool)
+
+	go func() {
+		for {
+			item, err := stream_of_items.Recv()
+
+			if err == io.EOF {
+				done <- true
+				return
+			}
+
+			checkErr(err)
+
+			log.Printf("Item Received is: %s", item)
+		}
+	}()
+
+	<-done
+	log.Printf("finished")
 }

@@ -25,8 +25,11 @@ type Rental_Easy_FunctionalitiesClient interface {
 	CreateUser(ctx context.Context, in *NewUser, opts ...grpc.CallOption) (*UserId, error)
 	CreateItem(ctx context.Context, in *NewItem, opts ...grpc.CallOption) (*ItemId, error)
 	GetAllItems(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Items, error)
-	GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error)
-	UpdateItem(ctx context.Context, in *DetailedItem, opts ...grpc.CallOption) (*ItemId, error)
+	GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*Item, error)
+	UpdateItem(ctx context.Context, in *Item, opts ...grpc.CallOption) (*ItemId, error)
+	GetUserLeasedItems(ctx context.Context, in *UserId, opts ...grpc.CallOption) (Rental_Easy_Functionalities_GetUserLeasedItemsClient, error)
+	BookItem(ctx context.Context, in *Booking, opts ...grpc.CallOption) (*BookingId, error)
+	GetBookedItems(ctx context.Context, in *UserId, opts ...grpc.CallOption) (Rental_Easy_Functionalities_GetBookedItemsClient, error)
 }
 
 type rental_Easy_FunctionalitiesClient struct {
@@ -64,8 +67,8 @@ func (c *rental_Easy_FunctionalitiesClient) GetAllItems(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *rental_Easy_FunctionalitiesClient) GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*DetailedItem, error) {
-	out := new(DetailedItem)
+func (c *rental_Easy_FunctionalitiesClient) GetItemById(ctx context.Context, in *ItemId, opts ...grpc.CallOption) (*Item, error) {
+	out := new(Item)
 	err := c.cc.Invoke(ctx, "/rentalmgmt.Rental_Easy_Functionalities/GetItemById", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -73,13 +76,86 @@ func (c *rental_Easy_FunctionalitiesClient) GetItemById(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *rental_Easy_FunctionalitiesClient) UpdateItem(ctx context.Context, in *DetailedItem, opts ...grpc.CallOption) (*ItemId, error) {
+func (c *rental_Easy_FunctionalitiesClient) UpdateItem(ctx context.Context, in *Item, opts ...grpc.CallOption) (*ItemId, error) {
 	out := new(ItemId)
 	err := c.cc.Invoke(ctx, "/rentalmgmt.Rental_Easy_Functionalities/UpdateItem", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (c *rental_Easy_FunctionalitiesClient) GetUserLeasedItems(ctx context.Context, in *UserId, opts ...grpc.CallOption) (Rental_Easy_Functionalities_GetUserLeasedItemsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Rental_Easy_Functionalities_ServiceDesc.Streams[0], "/rentalmgmt.Rental_Easy_Functionalities/GetUserLeasedItems", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &rental_Easy_FunctionalitiesGetUserLeasedItemsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Rental_Easy_Functionalities_GetUserLeasedItemsClient interface {
+	Recv() (*Item, error)
+	grpc.ClientStream
+}
+
+type rental_Easy_FunctionalitiesGetUserLeasedItemsClient struct {
+	grpc.ClientStream
+}
+
+func (x *rental_Easy_FunctionalitiesGetUserLeasedItemsClient) Recv() (*Item, error) {
+	m := new(Item)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *rental_Easy_FunctionalitiesClient) BookItem(ctx context.Context, in *Booking, opts ...grpc.CallOption) (*BookingId, error) {
+	out := new(BookingId)
+	err := c.cc.Invoke(ctx, "/rentalmgmt.Rental_Easy_Functionalities/BookItem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rental_Easy_FunctionalitiesClient) GetBookedItems(ctx context.Context, in *UserId, opts ...grpc.CallOption) (Rental_Easy_Functionalities_GetBookedItemsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Rental_Easy_Functionalities_ServiceDesc.Streams[1], "/rentalmgmt.Rental_Easy_Functionalities/GetBookedItems", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &rental_Easy_FunctionalitiesGetBookedItemsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Rental_Easy_Functionalities_GetBookedItemsClient interface {
+	Recv() (*BookedItems, error)
+	grpc.ClientStream
+}
+
+type rental_Easy_FunctionalitiesGetBookedItemsClient struct {
+	grpc.ClientStream
+}
+
+func (x *rental_Easy_FunctionalitiesGetBookedItemsClient) Recv() (*BookedItems, error) {
+	m := new(BookedItems)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // Rental_Easy_FunctionalitiesServer is the server API for Rental_Easy_Functionalities service.
@@ -89,8 +165,11 @@ type Rental_Easy_FunctionalitiesServer interface {
 	CreateUser(context.Context, *NewUser) (*UserId, error)
 	CreateItem(context.Context, *NewItem) (*ItemId, error)
 	GetAllItems(context.Context, *Request) (*Items, error)
-	GetItemById(context.Context, *ItemId) (*DetailedItem, error)
-	UpdateItem(context.Context, *DetailedItem) (*ItemId, error)
+	GetItemById(context.Context, *ItemId) (*Item, error)
+	UpdateItem(context.Context, *Item) (*ItemId, error)
+	GetUserLeasedItems(*UserId, Rental_Easy_Functionalities_GetUserLeasedItemsServer) error
+	BookItem(context.Context, *Booking) (*BookingId, error)
+	GetBookedItems(*UserId, Rental_Easy_Functionalities_GetBookedItemsServer) error
 	mustEmbedUnimplementedRental_Easy_FunctionalitiesServer()
 }
 
@@ -107,11 +186,20 @@ func (UnimplementedRental_Easy_FunctionalitiesServer) CreateItem(context.Context
 func (UnimplementedRental_Easy_FunctionalitiesServer) GetAllItems(context.Context, *Request) (*Items, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllItems not implemented")
 }
-func (UnimplementedRental_Easy_FunctionalitiesServer) GetItemById(context.Context, *ItemId) (*DetailedItem, error) {
+func (UnimplementedRental_Easy_FunctionalitiesServer) GetItemById(context.Context, *ItemId) (*Item, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetItemById not implemented")
 }
-func (UnimplementedRental_Easy_FunctionalitiesServer) UpdateItem(context.Context, *DetailedItem) (*ItemId, error) {
+func (UnimplementedRental_Easy_FunctionalitiesServer) UpdateItem(context.Context, *Item) (*ItemId, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateItem not implemented")
+}
+func (UnimplementedRental_Easy_FunctionalitiesServer) GetUserLeasedItems(*UserId, Rental_Easy_Functionalities_GetUserLeasedItemsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetUserLeasedItems not implemented")
+}
+func (UnimplementedRental_Easy_FunctionalitiesServer) BookItem(context.Context, *Booking) (*BookingId, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BookItem not implemented")
+}
+func (UnimplementedRental_Easy_FunctionalitiesServer) GetBookedItems(*UserId, Rental_Easy_Functionalities_GetBookedItemsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetBookedItems not implemented")
 }
 func (UnimplementedRental_Easy_FunctionalitiesServer) mustEmbedUnimplementedRental_Easy_FunctionalitiesServer() {
 }
@@ -200,7 +288,7 @@ func _Rental_Easy_Functionalities_GetItemById_Handler(srv interface{}, ctx conte
 }
 
 func _Rental_Easy_Functionalities_UpdateItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DetailedItem)
+	in := new(Item)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -212,9 +300,69 @@ func _Rental_Easy_Functionalities_UpdateItem_Handler(srv interface{}, ctx contex
 		FullMethod: "/rentalmgmt.Rental_Easy_Functionalities/UpdateItem",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(Rental_Easy_FunctionalitiesServer).UpdateItem(ctx, req.(*DetailedItem))
+		return srv.(Rental_Easy_FunctionalitiesServer).UpdateItem(ctx, req.(*Item))
 	}
 	return interceptor(ctx, in, info, handler)
+}
+
+func _Rental_Easy_Functionalities_GetUserLeasedItems_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(UserId)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(Rental_Easy_FunctionalitiesServer).GetUserLeasedItems(m, &rental_Easy_FunctionalitiesGetUserLeasedItemsServer{stream})
+}
+
+type Rental_Easy_Functionalities_GetUserLeasedItemsServer interface {
+	Send(*Item) error
+	grpc.ServerStream
+}
+
+type rental_Easy_FunctionalitiesGetUserLeasedItemsServer struct {
+	grpc.ServerStream
+}
+
+func (x *rental_Easy_FunctionalitiesGetUserLeasedItemsServer) Send(m *Item) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Rental_Easy_Functionalities_BookItem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Booking)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(Rental_Easy_FunctionalitiesServer).BookItem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rentalmgmt.Rental_Easy_Functionalities/BookItem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(Rental_Easy_FunctionalitiesServer).BookItem(ctx, req.(*Booking))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Rental_Easy_Functionalities_GetBookedItems_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(UserId)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(Rental_Easy_FunctionalitiesServer).GetBookedItems(m, &rental_Easy_FunctionalitiesGetBookedItemsServer{stream})
+}
+
+type Rental_Easy_Functionalities_GetBookedItemsServer interface {
+	Send(*BookedItems) error
+	grpc.ServerStream
+}
+
+type rental_Easy_FunctionalitiesGetBookedItemsServer struct {
+	grpc.ServerStream
+}
+
+func (x *rental_Easy_FunctionalitiesGetBookedItemsServer) Send(m *BookedItems) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 // Rental_Easy_Functionalities_ServiceDesc is the grpc.ServiceDesc for Rental_Easy_Functionalities service.
@@ -244,7 +392,22 @@ var Rental_Easy_Functionalities_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateItem",
 			Handler:    _Rental_Easy_Functionalities_UpdateItem_Handler,
 		},
+		{
+			MethodName: "BookItem",
+			Handler:    _Rental_Easy_Functionalities_BookItem_Handler,
+		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetUserLeasedItems",
+			Handler:       _Rental_Easy_Functionalities_GetUserLeasedItems_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetBookedItems",
+			Handler:       _Rental_Easy_Functionalities_GetBookedItems_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "pkg/rentalmgmt/rentalmgmt.proto",
 }

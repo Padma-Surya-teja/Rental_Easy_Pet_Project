@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"rental_easy.in/m/pkg/models"
@@ -47,16 +48,16 @@ func (s *ServerSideImplementation) GetAllItems(ctx context.Context, in *rental.R
 	Items := []*rental.Item{}
 	All_Items := s.Db.GetItems()
 	for _, Item := range All_Items {
-		Items = append(Items, &rental.Item{Id: int32(Item.ID), Name: Item.Name, Description: Item.Description, AmountPerDay: int32(Item.Amount_per_day)})
+		Items = append(Items, &rental.Item{ID: int32(Item.ID), Name: Item.Name, Description: Item.Description, AmountPerDay: int32(Item.Amount_per_day)})
 	}
 	return &rental.Items{
 		Items: Items}, nil
 }
 
-func (s *ServerSideImplementation) GetItem(ctx context.Context, in *rental.ItemId) (*rental.DetailedItem, error) {
-	Received_Item := s.Db.GetItem(int(in.Id))
+func (s *ServerSideImplementation) GetItemById(ctx context.Context, in *rental.ItemId) (*rental.Item, error) {
+	Received_Item := s.Db.GetItemById(int(in.Id))
 
-	return &rental.DetailedItem{
+	return &rental.Item{
 		ID:             int32(Received_Item.ID),
 		Name:           Received_Item.Name,
 		Description:    Received_Item.Description,
@@ -67,7 +68,7 @@ func (s *ServerSideImplementation) GetItem(ctx context.Context, in *rental.ItemI
 		UserID:         int32(Received_Item.UserID)}, nil
 }
 
-func (s *ServerSideImplementation) UpdateItem(ctx context.Context, in *rental.DetailedItem) (*rental.ItemId, error) {
+func (s *ServerSideImplementation) UpdateItem(ctx context.Context, in *rental.Item) (*rental.ItemId, error) {
 	Avail_From := Convert_to_String(strings.Split(in.GetAvailable_From(), "/"))
 	Avail_To := Convert_to_String(strings.Split(in.GetAvailable_To(), "/"))
 	Updated_Item := models.Item{
@@ -86,4 +87,31 @@ func (s *ServerSideImplementation) UpdateItem(ctx context.Context, in *rental.De
 	return &rental.ItemId{
 		Id: int32(Updated_Item_id)}, nil
 
+}
+
+func (s *ServerSideImplementation) GetUserLeasedItems(in *rental.UserId, stream rental.Rental_Easy_Functionalities_GetUserLeasedItemsServer) error {
+	Received_Items := s.Db.GetItemsofOwner(int(in.Id))
+
+	var wg sync.WaitGroup
+	for _, Item := range Received_Items {
+		wg.Add(1)
+		go func(item models.Item) {
+			defer wg.Done()
+			time.Sleep(time.Duration(100) * time.Microsecond)
+			itm := rental.Item{
+				ID:             int32(item.ID),
+				Name:           item.Name,
+				Description:    item.Description,
+				Category:       item.Category,
+				Available_From: item.Available_From.String(),
+				Available_To:   item.Available_From.String(),
+				AmountPerDay:   int32(item.Amount_per_day),
+				UserID:         int32(item.UserID)}
+			err := stream.Send(&itm)
+			checkErr(err)
+		}(Item)
+	}
+
+	wg.Wait()
+	return nil
 }

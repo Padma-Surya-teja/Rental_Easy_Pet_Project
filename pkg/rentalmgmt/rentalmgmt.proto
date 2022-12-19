@@ -8,13 +8,18 @@ service Rental_Easy_Functionalities {
     rpc CreateUser(NewUser) returns (UserId) {}
     rpc CreateItem(NewItem) returns (ItemId) {}
     rpc GetAllItems(Request) returns (Items) {}
-    rpc GetItemById(ItemId) returns (DetailedItem) {}
-    rpc UpdateItem(DetailedItem) returns (ItemId) {}
+    rpc GetItemById(ItemId) returns (Item) {}
+    rpc UpdateItem(Item) returns (ItemId) {}
+    rpc GetUserLeasedItems(UserId) returns (stream Item) {}
+    rpc BookItem(Booking) returns (BookingId) {}
+    rpc GetBookedItems(UserId) returns (stream BookedItems) {}
     // rpc GetAvailableDatesofItem(ItemId) returns (AvailableDates) {}
     // rpc ListAllItems(Request) returns (Items) {}
 }
 
 
+
+//USER'S SIDE
 //Create New User
 message NewUser {
     string Name = 1;
@@ -26,6 +31,30 @@ message NewUser {
     string Country = 7;
 }
 
+//Get the User Id
+message UserId {
+    int32 id = 1;
+}
+
+message Profile {
+    int32 Id = 1;
+    string Name = 2;
+    string Email = 3;
+    string Phone_Number = 4;
+    string Address = 5;
+    string District = 6;
+    string Postal_Code = 7;
+    string Country = 8;
+}
+
+message Booking {
+    string StartDate = 1;
+    string EndDate = 2;
+    int32 UserId = 3;
+    int32 ItemId = 4;
+}
+
+//ITEM'S SIDE
 //Create New Item
 message NewItem {
     string Name = 1;
@@ -43,7 +72,7 @@ message ItemId {
 }
 
 //Get a Particular Item with all Details
-message DetailedItem {
+message Item {
     int32 ID = 1;
     string Name = 2;
     string Description = 3;
@@ -54,10 +83,6 @@ message DetailedItem {
     int32 UserID = 8;
 }
 
-//Get the User Id
-message UserId {
-    int32 id = 1;
-}
 
 //To Show the Available Dates
 message AvailableDates {
@@ -65,30 +90,30 @@ message AvailableDates {
     string Available_To = 2;
 }
 
-//For Displaying Each Item to User
-message Item {
-    int32 id = 1;
-    string Name = 2;
-    string Description = 3;
-    int32 Amount_per_day = 4;
-}
-
 //For Listing all the Items
 message Items {
     repeated Item items=1;
 }
+
+
+//REQUEST AND RESPONSE
 //For Requesting
 message Request {
     string request = 1;
 }
 
-message Profile {
+//BOOKING RELATED
+
+//To Conform Item is booked
+message BookingId{
     int32 Id = 1;
-    string Name = 2;
-    string Email = 3;
-    string Phone_Number = 4;
-    string Address = 5;
-    string District = 6;
-    string Postal_Code = 7;
-    string Country = 8;
+}
+
+//To Show the Booked Items
+message BookedItems {
+    int32 Id = 1;
+    string ItemName = 2;
+    string StartDate = 3;
+    string EndDate = 4;
+    int32 TotalAmount = 5;
 }
