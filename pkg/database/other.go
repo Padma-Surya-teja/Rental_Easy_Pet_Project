@@ -26,5 +26,5 @@ func (db DBClient) GetUserEmail(user_id int) string {
 	email := models.User{}
 	db.Db.Select("email").First(&email, user_id)
 
-	return email.Email
+	return *email.Email
 }
