@@ -23,6 +23,8 @@ type DataBase interface {
 	DeleteItem(int) int
 	GetUserEmail(int) string
 	Get_Item_Name(int) string
+	SearchItems(string) []models.Item
+	SearchByCategory(string) []models.Item
 }
 
 type DBClient struct {
