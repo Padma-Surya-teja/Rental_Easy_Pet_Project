@@ -23,7 +23,7 @@ func Mail(email, item_name, start_date, end_date string) {
 	        }
 	    ],
 	    "from": {
-	        "email": "rithish.p@beautifulcode.in"
+	        "email": "sender email"
 	    },
 	    "content": [
 	        {
