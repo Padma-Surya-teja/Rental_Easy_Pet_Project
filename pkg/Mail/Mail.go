@@ -37,7 +37,7 @@ func Mail(email, item_name, start_date, end_date string) {
 	req, _ := http.NewRequest("POST", url, payload)
 
 	req.Header.Add("content-type", "application/json")
-	req.Header.Add("X-RapidAPI-Key", "a429e686f3msh3adaabd0a2eb39bp12a782jsn788176374f9a")
+	req.Header.Add("X-RapidAPI-Key", "Enter Rapid-API-Key here")
 	req.Header.Add("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
 
 	res, _ := http.DefaultClient.Do(req)
