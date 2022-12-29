@@ -6,42 +6,46 @@ import (
 	"io"
 	"log"
 
+	"google.golang.org/grpc/status"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
+	"rental_easy.in/m/pkg/utils"
 )
 
 // Booking an Item
-func Book_an_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	booking_id, err := c.BookItem(ctx, &rental.Booking{StartDate: "12/01/2023", EndDate: "12/01/2023", UserId: 8, ItemId: 4})
-	checkErr(err)
-	if booking_id.Id == 0 {
-		panic("Booking Failed")
+func BookAnItem(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Booking An Item")
+
+	booking, err := c.BookItem(ctx, &rental.Booking{StartDate: "01-01-2023", EndDate: "10-01-2023", UserId: 4, ItemId: 5})
+	utils.CheckErr(err)
+
+	if err != nil || booking.Id == 0 {
+		log.Println("Booking Failed!\n Please check with the Dates\n You have entered as the dates which have already booked or not in the available dates")
+	} else {
+		log.Println("Booking Conformed with an Id : ", booking.Id)
 	}
 
-	fmt.Println("Booking Conformed with an Id : ", booking_id.Id)
 }
 
 // Get Booked Items Details
-func Get_User_Booked_Items(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	Booking_Details, err := c.GetUserBookedItems(ctx, &rental.UserId{Id: 4})
-	checkErr(err)
+func GetUserBookedItems(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Getting User Booked Items")
 
-	done := make(chan bool)
+	BookingDetails, err := c.GetUserBookedItems(ctx, &rental.User{Id: 12})
+	utils.CheckErr(err)
+	st, ok := status.FromError(err)
+	log.Println(st, ok)
 
-	go func() {
-		for {
-			Booked_Item, err := Booking_Details.Recv()
+	for {
+		BookedItem, err := BookingDetails.Recv()
 
-			if err == io.EOF {
-				done <- true
-				return
-			}
-
-			checkErr(err)
-
-			log.Printf("Booking Details is: %s", Booked_Item)
+		if err == io.EOF || err != nil {
+			fmt.Println("finished")
+			return
 		}
-	}()
 
-	<-done
-	log.Printf("finished")
+		utils.CheckErr(err)
+
+		log.Printf("Booking Details is: %s\n", BookedItem)
+	}
+
 }

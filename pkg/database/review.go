@@ -2,27 +2,27 @@ package database
 
 import "rental_easy.in/m/pkg/models"
 
-func (db DBClient) AddReview(review models.Review) int {
-	db.Db.Create(&review)
+func (db DBClient) AddReview(review models.Review) (int, error) {
+	result := db.Db.Create(&review)
 
-	return int(review.ID)
+	return int(review.ID), result.Error
 }
 
 // Updating the Review
-func (db DBClient) Update_Review(review models.Review) int {
-	db.Db.Save(&review)
+func (db DBClient) UpdateReview(review models.Review) (int, error) {
+	result := db.Db.Save(&review)
 
-	return int(review.ID)
+	return int(review.ID), result.Error
 }
 
-func (db DBClient) DeleteReview(reviewId int) int {
-	db.Db.Delete(&models.Review{}, reviewId)
+func (db DBClient) DeleteReview(id int) (int, error) {
+	result := db.Db.Delete(&models.Review{}, id)
 
-	return reviewId
+	return id, result.Error
 }
 
-func (db DBClient) GetReviews(item_id int) []models.Review {
-	Reviews := []models.Review{}
-	db.Db.Find(&Reviews, "item_id = ?", item_id)
-	return Reviews
+func (db DBClient) GetReviews(id int) ([]models.Review, error) {
+	reviews := []models.Review{}
+	result := db.Db.Find(&reviews, "item_id = ?", id)
+	return reviews, result.Error
 }

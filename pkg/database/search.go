@@ -1,23 +1,21 @@
 package database
 
 import (
-	"fmt"
+	"log"
 
+	"github.com/jinzhu/gorm"
 	"rental_easy.in/m/pkg/models"
 )
 
-func (db DBClient) SearchItems(searchstring string) []models.Item {
-	Items := []models.Item{}
-	db.Db.Where("name LIKE ?", "%"+searchstring+"%").Find(&Items)
+func (db DBClient) SearchItems(searchstring string, category string) ([]models.Item, error) {
+	log.Println("Search Items in db")
+	items := []models.Item{}
+	var result *gorm.DB
+	if category == "" {
+		result = db.Db.Where("category LIKE ?", category).Find(&items)
+	} else {
+		result = db.Db.Where("name LIKE ?", "%"+searchstring+"%").Find(&items)
+	}
 
-	fmt.Println(Items)
-	return Items
-}
-
-func (db DBClient) SearchByCategory(category string) []models.Item {
-	Items := []models.Item{}
-	db.Db.Where("category LIKE ?", category).Find(&Items)
-
-	fmt.Println(Items)
-	return Items
+	return items, result.Error
 }

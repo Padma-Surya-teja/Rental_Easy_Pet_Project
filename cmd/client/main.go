@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"rental_easy.in/m/pkg/client"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
 )
@@ -15,12 +16,6 @@ const (
 	address = "localhost:8080"
 )
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 
 	connection, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(10*time.Second))
@@ -29,10 +24,20 @@ func main() {
 		log.Fatal("Connection Failed", err.Error())
 	}
 	defer connection.Close()
+
 	c := rental.NewRental_Easy_FunctionalitiesClient(connection)
+	auth := rental.NewAuthServiceClient(connection)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	client.Add_Review(c, ctx)
+	// Do the Function Call Here
+	token := client.CreateUser(auth, ctx)
+	// client.GetAllItems(c, ctx)
+
+	md := metadata.New(map[string]string{"authorization": token})
+	ctx = metadata.NewOutgoingContext(context.Background(), md)
+
+	client.GetAllItems(c, ctx)
+
 }

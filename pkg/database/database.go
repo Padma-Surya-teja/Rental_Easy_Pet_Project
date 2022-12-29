@@ -6,25 +6,26 @@ import (
 )
 
 type DataBase interface {
-	CreateUser(models.User) int
-	AddItem(models.Item) int
-	GetItems() []models.Item
-	GetItemById(int) models.Item
-	Update_Item(item models.Item) (id int)
-	GetItemsofOwner(int) []models.Item
-	AddBooking(models.Booking) (id int)
-	GetBookings(int) []models.Booking
-	UserAlreadyBooked(int, int) bool
-	AddReview(models.Review) int
-	Update_Review(models.Review) int
-	UserAlreadyAddedReview(int, int) bool
-	DeleteReview(int) int
-	GetReviews(int) []models.Review
-	DeleteItem(int) int
-	GetUserEmail(int) string
-	Get_Item_Name(int) string
-	SearchItems(string) []models.Item
-	SearchByCategory(string) []models.Item
+	CreateUser(models.User) (int, error)
+	UpdateUser(models.User) (int, error)
+	GetUser(int) (models.User, error)
+	AddItem(models.Item) (int, error)
+	GetItems() ([]models.Item, error)
+	GetItemById(int) (models.Item, error)
+	UpdateItem(item models.Item) (int, error)
+	GetItemsofOwner(int) ([]models.Item, error)
+	AddBooking(models.Booking) (models.Booking, error)
+	GetBookings(int) ([]models.Booking, error)
+	UserAlreadyBooked(int, int) (bool, error)
+	AddReview(models.Review) (int, error)
+	UpdateReview(models.Review) (int, error)
+	UserAlreadyAddedReview(int, int) (bool, error)
+	DeleteReview(int) (int, error)
+	GetReviews(int) ([]models.Review, error)
+	DeleteItem(int) (int, error)
+	GetUserEmail(int) (string, error)
+	GetItemName(int) (string, error)
+	SearchItems(string, string) ([]models.Item, error)
 }
 
 type DBClient struct {

@@ -6,64 +6,69 @@ import (
 	"io"
 	"log"
 
+	"google.golang.org/grpc/status"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
+	"rental_easy.in/m/pkg/utils"
 )
 
 // Function to Add Review
-func Add_Review(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	new_review_id, err := c.AddReview(ctx, &rental.Review{Comment: "The Laptop is simply Superb and Processor is super fast", Rating: 5, UserId: 7, ItemId: 4})
+func AddReview(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Adding a Review")
 
-	checkErr(err)
+	review, err := c.AddReview(ctx, &rental.Review{Comment: "The Phone is simply Superb and Processor is super fast", Rating: 5, UserId: 12, ItemId: 1})
+	utils.CheckErr(err)
 
-	if new_review_id.Id == 0 {
-		fmt.Println("Sorry You are not allowed to add review to this Item as u have not used this item any time or You have already added the review")
-		return
+	if err != nil {
+		log.Fatalf("record not found")
+	} else if review == nil || review.Id == 0 {
+		log.Fatalf("Sorry You are not allowed to add review to this Item as u have not used this item any time or You have already added the review")
 	}
 
-	fmt.Println("Your Review Is added Successfully with Id : ", new_review_id.Id)
+	log.Println("Your Review Is added Successfully with Id : ", review.Id)
 }
 
-func Update_Review(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	updated_review_id, err := c.UpdateReview(ctx, &rental.Review{Id: 1, Comment: "The Phone is simply Superb and Processor is super fast", Rating: 5, UserId: 4, ItemId: 1})
+func UpdateReview(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Updating Review")
 
-	checkErr(err)
-	if updated_review_id.Id == 0 {
+	review, err := c.UpdateReview(ctx, &rental.Review{Id: 2, Comment: "The Phone is simply Superb Nice Camera and Processor is super fast", Rating: 5, UserId: 12, ItemId: 2})
+	utils.CheckErr(err)
+	st, ok := status.FromError(err)
+	log.Println(st, ok)
+
+	if review.Id == 0 {
 		fmt.Println("Sorry You are not allowed to add review to this Item as u have not used this item any time")
 		return
 	}
 
-	fmt.Println("Your Review Is added Successfully with Id : ", updated_review_id.Id)
+	fmt.Println("Your Review Is added Successfully with Id : ", review.Id)
 }
 
 func DeleteReview(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	deleted_review_id, err := c.DeleteReview(ctx, &rental.ReviewId{Id: 3})
+	log.Println("Client : Deleting the Review")
+	review, err := c.DeleteReview(ctx, &rental.Review{Id: 2})
+	utils.CheckErr(err)
 
-	checkErr(err)
-
-	fmt.Println("Your Review Is deleted Successfully with Id : ", deleted_review_id.Id)
+	fmt.Println("Your Review Is deleted Successfully with Id : ", review.Id)
 }
 
 func GetAllReviews(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	stream_of_reviews, err := c.GetAllReviews(ctx, &rental.ItemId{Id: 1})
-	checkErr(err)
+	log.Println("Client : Getting Reviews")
 
-	done := make(chan bool)
+	stream, err := c.GetAllReviews(ctx, &rental.Item{Id: 3})
+	utils.CheckErr(err)
+	st, ok := status.FromError(err)
+	log.Println(st, ok)
 
-	go func() {
-		for {
-			item, err := stream_of_reviews.Recv()
+	for {
+		item, err := stream.Recv()
 
-			if err == io.EOF {
-				done <- true
-				return
-			}
-
-			checkErr(err)
-
-			log.Printf("Item Received is: %s", item)
+		if err == io.EOF {
+			log.Printf("finished")
+			return
 		}
-	}()
 
-	<-done
-	log.Printf("finished")
+		utils.CheckErr(err)
+
+		log.Printf("Item Received is: %s\n", item)
+	}
 }

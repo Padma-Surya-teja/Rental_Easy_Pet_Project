@@ -2,23 +2,27 @@ syntax = "proto3";
 
 package rentalmgmt;
 
+//https://stackoverflow.com/questions/7946370/protocol-buffer-how-to-define-date-type
+
 option go_package = "rental_easy.in/m/rentalmgmt";
 
 service Rental_Easy_Functionalities {
-    rpc CreateUser(User) returns (UserId) {}
-    rpc UpdateUser(User) returns (UserId) {}
-    rpc CreateItem(Item) returns (ItemId) {}
-    rpc GetAllItems(Request) returns (stream Item) {}
-    rpc GetItemById(ItemId) returns (Item) {}
-    rpc UpdateItem(Item) returns (ItemId) {}
-    rpc DeleteItem(ItemId) returns (ItemId) {}
-    rpc GetUserLeasedItems(UserId) returns (stream Item) {}
-    rpc BookItem(Booking) returns (BookingId) {}
-    rpc GetUserBookedItems(UserId) returns (stream BookedItems) {}
-    rpc AddReview(Review) returns (ReviewId) {}
-    rpc UpdateReview(Review) returns (ReviewId) {}
-    rpc DeleteReview(ReviewId) returns (ReviewId) {}
-    rpc GetAllReviews(ItemId) returns (stream Review) {}
+    rpc CreateUser(User) returns (User) {}
+    rpc GetUser(User) returns (User) {}
+    rpc UpdateUser(User) returns (User) {}
+    rpc CreateItem(Item) returns (Item) {}
+    rpc GetAllItems(ItemRequest) returns (stream Item) {}
+    rpc GetItemById(Item) returns (Item) {}
+    rpc UpdateItem(Item) returns (Item) {}
+    rpc DeleteItem(Item) returns (Item) {}
+    rpc GetUserLeasedItems(User) returns (stream Item) {}
+    rpc BookItem(Booking) returns (Booking) {}
+    rpc GetUserBookedItems(User) returns (stream Booking) {}
+    rpc AddReview(Review) returns (Review) {}
+    rpc UpdateReview(Review) returns (Review) {}
+    rpc DeleteReview(Review) returns (Review) {}
+    rpc GetAllReviews(Item) returns (stream Review) {}
+    rpc SearchItems(ItemRequest) returns (stream Item) {}
 }
 
 
@@ -29,84 +33,55 @@ message User {
     int32 Id = 1;
     string Name = 2;
     string Email = 3;
-    string Phone_Number = 4;
+    string PhoneNumber = 4;
     string Address = 5;
     string District = 6;
-    string Postal_Code = 7;
+    string PostalCode = 7;
     string Country = 8;
+    string Status = 9;
 }
 
-//Get the User Id
-message UserId {
-    int32 id = 1;
-}
-
-
-//ITEM'S SIDE
-
-//Get the Item Id
-message ItemId {
-    int32 id = 1;
-}
 
 //Get a Particular Item with all Details
 message Item {
-    int32 ID = 1;
+    int32 Id = 1;
     string Name = 2;
     string Description = 3;
     string Category = 4;
-    string Available_From = 5;
-    string Available_To = 6;
-    int32 Amount_per_day = 7;
-    int32 UserID = 8;
-}
-
-
-//To Show the Available Dates
-message AvailableDates {
-    string Available_From = 1;
-    string Available_To = 2;
-}
-
-//For Listing all the Items
-message Items {
-    repeated Item items=1;
+    string AvailableFrom = 5;
+    string AvailableTo = 6;
+    int32 AmountPerDay = 7;
+    int32 UserId = 8;
+    string Status = 9;
 }
 
 
 //REQUEST AND RESPONSE
 //For Requesting
-message Request {
-    string request = 1;
+message ItemRequest {
+    string Request = 1;
+    enum Category {
+        MobilePhones = 0;
+        Laptops = 1;
+        Accessories = 2;
+    }
+    Category category = 2;
+    string Status = 3;
 }
-
 //BOOKING RELATED
-
-//To Conform Item is booked
-message BookingId{
-    int32 Id = 1;
-}
-
-message Booking {
-    string StartDate = 1;
-    string EndDate = 2;
-    int32 UserId = 3;
-    int32 ItemId = 4;
-}
 //To Show the Booked Items
-message BookedItems {
+message Booking {
     int32 Id = 1;
     string ItemName = 2;
     string StartDate = 3;
     string EndDate = 4;
     int32 TotalAmount = 5;
+    int32 UserId = 6;
+    int32 ItemId = 7;
+    string Status = 8;
 }
 
 //REVIEWS RELATED
-
-message ReviewId{
-    int32 Id = 1;
-}
 
 message Review {
     int32 Id = 1;
@@ -114,5 +89,6 @@ message Review {
     int32 Rating = 3;
     int32 UserId = 4;
     int32 ItemId = 5;
+    string Status = 6;
 }
 

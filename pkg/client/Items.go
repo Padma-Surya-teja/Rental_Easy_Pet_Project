@@ -2,99 +2,99 @@ package client
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 
+	"google.golang.org/grpc/status"
 	rental "rental_easy.in/m/pkg/rentalmgmt"
+	"rental_easy.in/m/pkg/utils"
 )
 
-func Add_New_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	new_item_id, err := c.CreateItem(ctx, &rental.Item{Name: "Asus ZenBook 14 OLED", Description: "Nice Display View Experience is amazing", Category: "Laptops", Available_From: "1/01/2023", Available_To: "27/02/2023", AmountPerDay: 1000, UserID: 4})
-	checkErr(err)
-	if new_item_id.Id == 0 {
-		panic("Error with Adding the Item")
+func AddNewItem(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Creating a New Item")
+	item, err := c.CreateItem(ctx, &rental.Item{Name: "Asus ZenBook 14 OLED", Description: "Nice Display View Experience is amazing", Category: "Laptops", AvailableFrom: "01-01-2023", AvailableTo: "31-02-2023", AmountPerDay: 1000, UserId: 1})
+	utils.CheckErr(err)
+
+	if err != nil {
+		log.Println("New Item has been Created with Id : ", item.Id)
+	} else {
+		log.Println("Error with Adding the Item")
 	}
 
-	fmt.Println("New Item has been Created with Id : ", new_item_id.Id)
 }
 
-func Get_All_Items(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	stream_of_items, err := c.GetAllItems(ctx, &rental.Request{Request: "Get All Items"})
-	checkErr(err)
+func GetAllItems(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Getting All the Items")
 
-	done := make(chan bool)
+	stream, err := c.GetAllItems(ctx, &rental.ItemRequest{Request: "Get All Items"})
+	utils.CheckErr(err)
 
-	go func() {
-		for {
-			item, err := stream_of_items.Recv()
+	for {
+		item, err := stream.Recv()
 
-			if err == io.EOF {
-				done <- true
-				return
-			}
-
-			checkErr(err)
-
-			log.Printf("Item Received is: %s", item)
+		if err == io.EOF {
+			log.Fatalf("finished")
+			return
 		}
-	}()
 
-	<-done
-	log.Printf("finished")
-}
+		utils.CheckErr(err)
 
-func Get_Item_By_Id(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	Item, err := c.GetItemById(ctx, &rental.ItemId{Id: 1})
-	checkErr(err)
-
-	if Item.ID == 0 {
-		fmt.Println("Item Not Found")
-	} else {
-		fmt.Println("Item with the Given Id is : ")
-		fmt.Println(Item)
+		log.Println("\nItem Received is: ", item)
 	}
 }
 
-func Update_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	Updated_Item_id, err := c.UpdateItem(ctx, &rental.Item{ID: 1, Name: "IqooNeo6", Description: "This phone has snapdragon 870 processor with nice camera", Category: "Mobile Phones", Available_From: "16/12/2022", Available_To: "30/12/2022", AmountPerDay: 500, UserID: 1})
-	checkErr(err)
+func GetItemById(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Getting the Item")
 
-	if Updated_Item_id.Id == 0 {
-		fmt.Println("Error in Updating the Item")
-	} else {
-		fmt.Println("Item has been Updated Successfully with Id : ", Updated_Item_id.Id)
+	item, err := c.GetItemById(ctx, &rental.Item{Id: 2})
+	utils.CheckErr(err)
+
+	if err == nil {
+		log.Println("Item with the Given Id is : ", item)
 	}
 }
 
-func Delete_Item(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	deleted_Item_id, err := c.DeleteItem(ctx, &rental.ItemId{Id: 1})
+func UpdateItem(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Updating the Item")
 
-	checkErr(err)
-	fmt.Println("Item has been deleted successfully with Id : ", deleted_Item_id.Id)
+	item, err := c.UpdateItem(ctx, &rental.Item{Id: 2, Name: "IqooNeo6", Description: "This phone has snapdragon 870 processor with nice camera", Category: "MobilePhones", AvailableFrom: "16-01-2023", AvailableTo: "30-01-2023", AmountPerDay: 500, UserId: 3})
+	utils.CheckErr(err)
+	st, ok := status.FromError(err)
+	log.Println(st, ok)
+
+	if err != nil {
+		log.Println("Updated the Item with Id : ", item.Id)
+	}
+}
+
+func DeleteItem(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Deleting an Item")
+
+	item, err := c.DeleteItem(ctx, &rental.Item{Id: 1})
+	utils.CheckErr(err)
+
+	if err == nil {
+		log.Println("Item has been deleted successfully with Id : ", item.Id)
+	}
 }
 
 func GetItemsofOwner(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	stream_of_items, err := c.GetUserLeasedItems(ctx, &rental.UserId{Id: 1})
-	checkErr(err)
+	log.Println("Getting the Items of Owner")
 
-	done := make(chan bool)
+	stream, err := c.GetUserLeasedItems(ctx, &rental.User{Id: 1})
+	utils.CheckErr(err)
 
-	go func() {
-		for {
-			item, err := stream_of_items.Recv()
+	for {
+		item, err := stream.Recv()
 
-			if err == io.EOF {
-				done <- true
-				return
-			}
-
-			checkErr(err)
-
-			log.Printf("Item Received is: %s", item)
+		if err == io.EOF {
+			log.Printf("finished")
+			return
 		}
-	}()
 
-	<-done
-	log.Printf("finished")
+		utils.CheckErr(err)
+
+		log.Printf("\nItem Received is: %s", item)
+	}
+
 }

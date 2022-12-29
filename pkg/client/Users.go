@@ -2,24 +2,45 @@ package client
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	rental "rental_easy.in/m/pkg/rentalmgmt"
+	"rental_easy.in/m/pkg/utils"
 )
 
-func checkErr(err error) {
+// Creating a New User
+func CreateNewUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Creating a User From Client Side")
+	user, err := c.CreateUser(ctx, &rental.User{})
+	utils.CheckErr(err)
+
+	if user == nil || user.Id == 0 {
+		log.Fatalf("Please Enter all values in the database")
+	}
 	if err != nil {
-		panic(err)
+		log.Fatalf("Email Id Already Used")
+	}
+
+	log.Println("New User has been Created with Id : ", user.Id)
+}
+
+func GetUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Getting a User From Client Side")
+	user, err := c.GetUser(ctx, &rental.User{Id: 1})
+	utils.CheckErr(err)
+
+	if err == nil {
+		log.Println("User Details : \n ", user)
 	}
 }
 
-// Creating a New User
-func Create_New_User(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
-	new_user_id, err := c.CreateUser(ctx, &rental.User{Name: "Surya", Email: "19bd1a057d@gmail.com", Phone_Number: "9398200123", Address: "Saidabad, Hyderabad", District: "Hyderabad", Postal_Code: "500059", Country: "India"})
-	checkErr(err)
-	if new_user_id.Id == 0 {
-		panic("Phone Number Already Used")
-	}
+func UpdateUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
+	log.Println("Client : Updating a User From Client Side")
+	User1.Id = 1
+	user, err := c.UpdateUser(ctx, &User1)
+	utils.CheckErr(err)
 
-	fmt.Println("New User has been Created with Id : ", new_user_id.Id)
+	if err == nil {
+		log.Println("User has been Updated with Id : ", user.Id)
+	}
 }

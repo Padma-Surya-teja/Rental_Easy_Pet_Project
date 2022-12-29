@@ -1,30 +1,27 @@
 package database
 
 import (
-	"fmt"
-
 	"rental_easy.in/m/pkg/models"
 )
 
-func (db DBClient) UserAlreadyAddedReview(userid int, itemid int) bool {
+func (db DBClient) UserAlreadyAddedReview(userid int, itemid int) (bool, error) {
 	var review = models.Review{}
-	db.Db.First(&review, "user_id = ? and item_id = ?", userid, itemid)
+	result := db.Db.First(&review, "user_id = ? and item_id = ?", userid, itemid)
 
-	fmt.Println(review)
-	return review.ID != 0
+	return review.ID != 0, result.Error
 }
 
 // Checking User Already Booked the Item Or not
-func (db DBClient) UserAlreadyBooked(userid int, itemid int) bool {
+func (db DBClient) UserAlreadyBooked(userid int, itemid int) (bool, error) {
 	var booking = models.Booking{}
-	db.Db.First(&booking, "user_id = ? and item_id = ?", userid, itemid)
+	result := db.Db.First(&booking, "user_id = ? and item_id = ?", userid, itemid)
 
-	return booking.ID != 0
+	return booking.ID != 0, result.Error
 }
 
-func (db DBClient) GetUserEmail(user_id int) string {
+func (db DBClient) GetUserEmail(user_id int) (string, error) {
 	email := models.User{}
-	db.Db.Select("email").First(&email, user_id)
+	result := db.Db.Select("email").First(&email, user_id)
 
-	return *email.Email
+	return *email.Email, result.Error
 }

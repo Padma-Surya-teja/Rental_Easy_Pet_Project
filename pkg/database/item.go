@@ -1,46 +1,47 @@
 package database
 
-import "rental_easy.in/m/pkg/models"
+import (
+	"rental_easy.in/m/pkg/models"
+)
 
-func (db DBClient) AddItem(item models.Item) (id int) {
-	db.Db.Create(&item)
-
-	return int(item.ID)
+func (db DBClient) AddItem(item models.Item) (int, error) {
+	result := db.Db.Create(&item)
+	return int(item.ID), result.Error
 }
 
-func (db DBClient) GetItems() []models.Item {
-	Items := []models.Item{}
-	db.Db.Find(&Items)
-	return Items
+func (db DBClient) GetItems() ([]models.Item, error) {
+	items := []models.Item{}
+	result := db.Db.Find(&items)
+	return items, result.Error
 }
 
-func (db DBClient) GetItemById(id int) models.Item {
+func (db DBClient) GetItemById(id int) (models.Item, error) {
 	var item models.Item
-	db.Db.First(&item, "id = ?", id)
-	return item
+	result := db.Db.First(&item, "id = ?", id)
+	return item, result.Error
 }
 
-func (db DBClient) Get_Item_Name(item_id int) string {
-	Item_name := models.Item{}
-	db.Db.Select("name").First(&Item_name, item_id)
+func (db DBClient) GetItemName(id int) (string, error) {
+	item := models.Item{}
+	result := db.Db.Select("name").First(&item, id)
 
-	return Item_name.Name
+	return item.Name, result.Error
 }
 
-func (db DBClient) Update_Item(item models.Item) (id int) {
-	db.Db.Save(&item)
+func (db DBClient) UpdateItem(item models.Item) (int, error) {
+	result := db.Db.Save(&item)
 
-	return int(item.ID)
+	return int(item.ID), result.Error
 }
 
-func (db DBClient) DeleteItem(itemId int) int {
-	db.Db.Delete(&models.Item{}, itemId)
+func (db DBClient) DeleteItem(id int) (int, error) {
+	result := db.Db.Delete(&models.Item{}, id)
 
-	return itemId
+	return id, result.Error
 }
 
-func (db DBClient) GetItemsofOwner(id int) []models.Item {
-	Items := []models.Item{}
-	db.Db.Find(&Items, "user_id = ?", id)
-	return Items
+func (db DBClient) GetItemsofOwner(id int) ([]models.Item, error) {
+	items := []models.Item{}
+	result := db.Db.Find(&items, "user_id = ?", id)
+	return items, result.Error
 }

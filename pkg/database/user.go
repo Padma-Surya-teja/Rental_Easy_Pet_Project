@@ -4,14 +4,21 @@ import (
 	"rental_easy.in/m/pkg/models"
 )
 
-func (db DBClient) CreateUser(user models.User) (id int) {
-	db.Db.Create(&user)
+func (db DBClient) CreateUser(user models.User) (int, error) {
 
-	return int(user.ID)
+	result := db.Db.Create(&user)
+
+	return int(user.ID), result.Error
 }
 
-func (db DBClient) Get_User_Details(id int) models.User {
+func (db DBClient) GetUser(id int) (models.User, error) {
 	var user models.User
-	db.Db.First(&user, "id = ?", id)
-	return user
+	result := db.Db.First(&user, "id = ?", id)
+	return user, result.Error
+}
+
+func (db DBClient) UpdateUser(user models.User) (int, error) {
+	result := db.Db.Save(&user)
+
+	return int(user.ID), result.Error
 }

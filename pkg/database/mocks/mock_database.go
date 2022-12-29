@@ -35,11 +35,12 @@ func (m *MockDataBase) EXPECT() *MockDataBaseMockRecorder {
 }
 
 // AddBooking mocks base method.
-func (m *MockDataBase) AddBooking(arg0 models.Booking) int {
+func (m *MockDataBase) AddBooking(arg0 models.Booking) (models.Booking, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddBooking", arg0)
-	ret0, _ := ret[0].(int)
-	return ret0
+	ret0, _ := ret[0].(models.Booking)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddBooking indicates an expected call of AddBooking.
@@ -49,11 +50,12 @@ func (mr *MockDataBaseMockRecorder) AddBooking(arg0 interface{}) *gomock.Call {
 }
 
 // AddItem mocks base method.
-func (m *MockDataBase) AddItem(arg0 models.Item) int {
+func (m *MockDataBase) AddItem(arg0 models.Item) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddItem", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddItem indicates an expected call of AddItem.
@@ -63,11 +65,12 @@ func (mr *MockDataBaseMockRecorder) AddItem(arg0 interface{}) *gomock.Call {
 }
 
 // AddReview mocks base method.
-func (m *MockDataBase) AddReview(arg0 models.Review) int {
+func (m *MockDataBase) AddReview(arg0 models.Review) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddReview", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddReview indicates an expected call of AddReview.
@@ -77,11 +80,12 @@ func (mr *MockDataBaseMockRecorder) AddReview(arg0 interface{}) *gomock.Call {
 }
 
 // CreateUser mocks base method.
-func (m *MockDataBase) CreateUser(arg0 models.User) int {
+func (m *MockDataBase) CreateUser(arg0 models.User) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateUser indicates an expected call of CreateUser.
@@ -91,11 +95,12 @@ func (mr *MockDataBaseMockRecorder) CreateUser(arg0 interface{}) *gomock.Call {
 }
 
 // DeleteItem mocks base method.
-func (m *MockDataBase) DeleteItem(arg0 int) int {
+func (m *MockDataBase) DeleteItem(arg0 int) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteItem", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DeleteItem indicates an expected call of DeleteItem.
@@ -105,11 +110,12 @@ func (mr *MockDataBaseMockRecorder) DeleteItem(arg0 interface{}) *gomock.Call {
 }
 
 // DeleteReview mocks base method.
-func (m *MockDataBase) DeleteReview(arg0 int) int {
+func (m *MockDataBase) DeleteReview(arg0 int) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteReview", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // DeleteReview indicates an expected call of DeleteReview.
@@ -119,11 +125,12 @@ func (mr *MockDataBaseMockRecorder) DeleteReview(arg0 interface{}) *gomock.Call 
 }
 
 // GetBookings mocks base method.
-func (m *MockDataBase) GetBookings(arg0 int) []models.Booking {
+func (m *MockDataBase) GetBookings(arg0 int) ([]models.Booking, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetBookings", arg0)
 	ret0, _ := ret[0].([]models.Booking)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetBookings indicates an expected call of GetBookings.
@@ -133,11 +140,12 @@ func (mr *MockDataBaseMockRecorder) GetBookings(arg0 interface{}) *gomock.Call {
 }
 
 // GetItemById mocks base method.
-func (m *MockDataBase) GetItemById(arg0 int) models.Item {
+func (m *MockDataBase) GetItemById(arg0 int) (models.Item, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetItemById", arg0)
 	ret0, _ := ret[0].(models.Item)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetItemById indicates an expected call of GetItemById.
@@ -146,12 +154,28 @@ func (mr *MockDataBaseMockRecorder) GetItemById(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItemById", reflect.TypeOf((*MockDataBase)(nil).GetItemById), arg0)
 }
 
+// GetItemName mocks base method.
+func (m *MockDataBase) GetItemName(arg0 int) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetItemName", arg0)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetItemName indicates an expected call of GetItemName.
+func (mr *MockDataBaseMockRecorder) GetItemName(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetItemName", reflect.TypeOf((*MockDataBase)(nil).GetItemName), arg0)
+}
+
 // GetItems mocks base method.
-func (m *MockDataBase) GetItems() []models.Item {
+func (m *MockDataBase) GetItems() ([]models.Item, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetItems")
 	ret0, _ := ret[0].([]models.Item)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetItems indicates an expected call of GetItems.
@@ -161,11 +185,12 @@ func (mr *MockDataBaseMockRecorder) GetItems() *gomock.Call {
 }
 
 // GetItemsofOwner mocks base method.
-func (m *MockDataBase) GetItemsofOwner(arg0 int) []models.Item {
+func (m *MockDataBase) GetItemsofOwner(arg0 int) ([]models.Item, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetItemsofOwner", arg0)
 	ret0, _ := ret[0].([]models.Item)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetItemsofOwner indicates an expected call of GetItemsofOwner.
@@ -175,11 +200,12 @@ func (mr *MockDataBaseMockRecorder) GetItemsofOwner(arg0 interface{}) *gomock.Ca
 }
 
 // GetReviews mocks base method.
-func (m *MockDataBase) GetReviews(arg0 int) []models.Review {
+func (m *MockDataBase) GetReviews(arg0 int) ([]models.Review, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetReviews", arg0)
 	ret0, _ := ret[0].([]models.Review)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetReviews indicates an expected call of GetReviews.
@@ -188,12 +214,28 @@ func (mr *MockDataBaseMockRecorder) GetReviews(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReviews", reflect.TypeOf((*MockDataBase)(nil).GetReviews), arg0)
 }
 
+// GetUser mocks base method.
+func (m *MockDataBase) GetUser(arg0 int) (models.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", arg0)
+	ret0, _ := ret[0].(models.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUser indicates an expected call of GetUser.
+func (mr *MockDataBaseMockRecorder) GetUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockDataBase)(nil).GetUser), arg0)
+}
+
 // GetUserEmail mocks base method.
-func (m *MockDataBase) GetUserEmail(arg0 int) string {
+func (m *MockDataBase) GetUserEmail(arg0 int) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserEmail", arg0)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // GetUserEmail indicates an expected call of GetUserEmail.
@@ -202,82 +244,73 @@ func (mr *MockDataBaseMockRecorder) GetUserEmail(arg0 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserEmail", reflect.TypeOf((*MockDataBase)(nil).GetUserEmail), arg0)
 }
 
-// Get_Item_Name mocks base method.
-func (m *MockDataBase) Get_Item_Name(arg0 int) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get_Item_Name", arg0)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// Get_Item_Name indicates an expected call of Get_Item_Name.
-func (mr *MockDataBaseMockRecorder) Get_Item_Name(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get_Item_Name", reflect.TypeOf((*MockDataBase)(nil).Get_Item_Name), arg0)
-}
-
-// SearchByCategory mocks base method.
-func (m *MockDataBase) SearchByCategory(arg0 string) []models.Item {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchByCategory", arg0)
-	ret0, _ := ret[0].([]models.Item)
-	return ret0
-}
-
-// SearchByCategory indicates an expected call of SearchByCategory.
-func (mr *MockDataBaseMockRecorder) SearchByCategory(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchByCategory", reflect.TypeOf((*MockDataBase)(nil).SearchByCategory), arg0)
-}
-
 // SearchItems mocks base method.
-func (m *MockDataBase) SearchItems(arg0 string) []models.Item {
+func (m *MockDataBase) SearchItems(arg0, arg1 string) ([]models.Item, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SearchItems", arg0)
+	ret := m.ctrl.Call(m, "SearchItems", arg0, arg1)
 	ret0, _ := ret[0].([]models.Item)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // SearchItems indicates an expected call of SearchItems.
-func (mr *MockDataBaseMockRecorder) SearchItems(arg0 interface{}) *gomock.Call {
+func (mr *MockDataBaseMockRecorder) SearchItems(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchItems", reflect.TypeOf((*MockDataBase)(nil).SearchItems), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchItems", reflect.TypeOf((*MockDataBase)(nil).SearchItems), arg0, arg1)
 }
 
-// Update_Item mocks base method.
-func (m *MockDataBase) Update_Item(item models.Item) int {
+// UpdateItem mocks base method.
+func (m *MockDataBase) UpdateItem(item models.Item) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update_Item", item)
+	ret := m.ctrl.Call(m, "UpdateItem", item)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// Update_Item indicates an expected call of Update_Item.
-func (mr *MockDataBaseMockRecorder) Update_Item(item interface{}) *gomock.Call {
+// UpdateItem indicates an expected call of UpdateItem.
+func (mr *MockDataBaseMockRecorder) UpdateItem(item interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update_Item", reflect.TypeOf((*MockDataBase)(nil).Update_Item), item)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateItem", reflect.TypeOf((*MockDataBase)(nil).UpdateItem), item)
 }
 
-// Update_Review mocks base method.
-func (m *MockDataBase) Update_Review(arg0 models.Review) int {
+// UpdateReview mocks base method.
+func (m *MockDataBase) UpdateReview(arg0 models.Review) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update_Review", arg0)
+	ret := m.ctrl.Call(m, "UpdateReview", arg0)
 	ret0, _ := ret[0].(int)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// Update_Review indicates an expected call of Update_Review.
-func (mr *MockDataBaseMockRecorder) Update_Review(arg0 interface{}) *gomock.Call {
+// UpdateReview indicates an expected call of UpdateReview.
+func (mr *MockDataBaseMockRecorder) UpdateReview(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update_Review", reflect.TypeOf((*MockDataBase)(nil).Update_Review), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateReview", reflect.TypeOf((*MockDataBase)(nil).UpdateReview), arg0)
+}
+
+// UpdateUser mocks base method.
+func (m *MockDataBase) UpdateUser(arg0 models.User) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUser", arg0)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateUser indicates an expected call of UpdateUser.
+func (mr *MockDataBaseMockRecorder) UpdateUser(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockDataBase)(nil).UpdateUser), arg0)
 }
 
 // UserAlreadyAddedReview mocks base method.
-func (m *MockDataBase) UserAlreadyAddedReview(arg0, arg1 int) bool {
+func (m *MockDataBase) UserAlreadyAddedReview(arg0, arg1 int) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserAlreadyAddedReview", arg0, arg1)
 	ret0, _ := ret[0].(bool)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // UserAlreadyAddedReview indicates an expected call of UserAlreadyAddedReview.
@@ -287,11 +320,12 @@ func (mr *MockDataBaseMockRecorder) UserAlreadyAddedReview(arg0, arg1 interface{
 }
 
 // UserAlreadyBooked mocks base method.
-func (m *MockDataBase) UserAlreadyBooked(arg0, arg1 int) bool {
+func (m *MockDataBase) UserAlreadyBooked(arg0, arg1 int) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UserAlreadyBooked", arg0, arg1)
 	ret0, _ := ret[0].(bool)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // UserAlreadyBooked indicates an expected call of UserAlreadyBooked.
