@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"rental_easy.in/m/pkg/models"
@@ -24,10 +25,9 @@ func (S *ServerSideImplementation) AddReview(ctx context.Context, in *rental.Rev
 		return &rental.Review{}, err
 	}
 
-	review, err := S.Db.UserAlreadyAddedReview(int(in.UserId), int(in.ItemId))
-	utils.CheckErr(err)
+	review, _ := S.Db.UserAlreadyAddedReview(int(in.UserId), int(in.ItemId))
 	if review {
-		return &rental.Review{}, err
+		return &rental.Review{}, errors.New("you have already added the review")
 	}
 
 	newReview := models.Review{
@@ -45,6 +45,11 @@ func (S *ServerSideImplementation) AddReview(ctx context.Context, in *rental.Rev
 
 func (S *ServerSideImplementation) UpdateReview(ctx context.Context, in *rental.Review) (*rental.Review, error) {
 	log.Printf("Server : Updating the Review")
+
+	reviewed, _ := S.Db.UserAlreadyAddedReview(int(in.UserId), int(in.ItemId))
+	if !reviewed {
+		return &rental.Review{}, errors.New("you are not allowed to edit this review")
+	}
 
 	review := models.Review{
 		Comments: in.Comment,
@@ -70,6 +75,8 @@ func (S *ServerSideImplementation) DeleteReview(ctx context.Context, in *rental.
 }
 
 func (S *ServerSideImplementation) GetAllReviews(in *rental.Item, stream rental.Rental_Easy_Functionalities_GetAllReviewsServer) error {
+	log.Println("Server : Getting All The Reviews")
+	log.Println("At Server Id : ", in.Id)
 	reviews, err := S.Db.GetReviews(int(in.Id))
 	utils.CheckErr(err)
 	if err != nil {

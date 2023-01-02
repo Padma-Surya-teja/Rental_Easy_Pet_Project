@@ -51,6 +51,13 @@ var mockuser3 = models.User{
 
 // Data for Actual Call
 var User1 = rental.User{Name: "Padma surya teja", Email: "19bd1a057d@gmail.com", PhoneNumber: "9999999991", Address: "H-No 1 Near Radhika Theatre Road no 5 Kapra, Secundrabad", District: "Medchal", PostalCode: "500029", Country: "India"}
+var User2 = rental.User{Name: "Padma surya teja",
+	Email:       email1,
+	PhoneNumber: "9999999991",
+	Address:     "H-No 1 Near Radhika Theatre Road no 5 Kapra, Secundrabad",
+	District:    "Medchal",
+	PostalCode:  "500029",
+	Country:     "India"}
 
 //Item Data
 
@@ -60,6 +67,15 @@ var mockItem1 = models.Item{
 	Category:      "Mobile Phones",
 	AvailableFrom: time.Date(2023, 01, 01, 0, 0, 0, 0, time.UTC),
 	AvailableTo:   time.Date(2023, 01, 03, 0, 0, 0, 0, time.UTC),
+	AmountPerDay:  500,
+	UserId:        1,
+}
+var Item1 = rental.Item{
+	Name:          "Iqoo Neo 6",
+	Description:   "Phone is Superfast and Display is just amazing",
+	Category:      "Mobile Phones",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-03",
 	AmountPerDay:  500,
 	UserId:        1,
 }
@@ -73,6 +89,34 @@ var mockItem2 = models.Item{
 	AmountPerDay:  1000,
 	UserId:        3,
 }
+var Item2 = rental.Item{
+	Name:          "Asus Zenbook 14 OLED",
+	Description:   "Nice Display View Experience is amazing",
+	Category:      "Laptops",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-31",
+	AmountPerDay:  1000,
+	UserId:        3,
+}
+
+var mockItem3 = models.Item{
+	Name:          "Iqoo Neo 6",
+	Description:   "Phone is Superfast and Display is just amazing",
+	Category:      "Mobile Phones",
+	AvailableFrom: time.Date(2023, 01, 01, 0, 0, 0, 0, time.UTC),
+	AvailableTo:   time.Date(2023, 01, 03, 0, 0, 0, 0, time.UTC),
+	AmountPerDay:  300,
+	UserId:        1,
+}
+var Item3 = rental.Item{
+	Name:          "Iqoo Neo 6",
+	Description:   "Phone is Superfast and Display is just amazing",
+	Category:      "Mobile Phones",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-03",
+	AmountPerDay:  300,
+	UserId:        1,
+}
 
 var mockItem4 = models.Item{
 	Name:          "Asus Zenbook 14",
@@ -83,15 +127,58 @@ var mockItem4 = models.Item{
 	AmountPerDay:  1000,
 	UserId:        2,
 }
+var Item4 = rental.Item{
+	Name:          "Asus Zenbook 14",
+	Description:   "Amazing Speed",
+	Category:      "Laptops",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-31",
+	AmountPerDay:  1000,
+	UserId:        2,
+}
 
-var mockItem3 = models.Item{
+var Item5 = rental.Item{
+	Id:            5,
 	Name:          "Iqoo Neo 6",
-	Description:   "Display is just amazing",
+	Description:   "Phone is Superfast and Display is just amazing",
 	Category:      "Mobile Phones",
-	AvailableFrom: time.Date(2023, 01, 01, 0, 0, 0, 0, time.UTC),
-	AvailableTo:   time.Date(2023, 01, 03, 0, 0, 0, 0, time.UTC),
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-03",
+	AmountPerDay:  500,
+	UserId:        1,
+}
+
+var Item6 = rental.Item{
+	Id:            6,
+	Name:          "Asus Zenbook 14 OLED",
+	Description:   "Nice Display View Experience is amazing",
+	Category:      "Laptops",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-31",
+	AmountPerDay:  1000,
+	UserId:        3,
+}
+
+var Item7 = rental.Item{
+	Id:            7,
+	Name:          "Iqoo Neo 6",
+	Description:   "Phone is Superfast and Display is just amazing",
+	Category:      "Mobile Phones",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-03",
 	AmountPerDay:  300,
 	UserId:        1,
+}
+
+var Item8 = rental.Item{
+	Id:            8,
+	Name:          "Asus Zenbook 14",
+	Description:   "Amazing Speed",
+	Category:      "Laptops",
+	AvailableFrom: "2023-01-01",
+	AvailableTo:   "2023-01-31",
+	AmountPerDay:  1000,
+	UserId:        2,
 }
 
 var mockUpdatedItem = models.Item{
@@ -113,49 +200,24 @@ var inputItem = rental.Item{
 	AmountPerDay:  500,
 	UserId:        1,
 }
-var Item1 = rental.Item{
-	Name:          "Iqoo Neo 6",
-	Description:   "Phone is Superfast and Display is just amazing",
-	Category:      "Mobile Phones",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-03",
-	AmountPerDay:  500,
-	UserId:        1,
-}
-
-var Item2 = rental.Item{
-	Name:          "Asus Zenbook 14 OLED",
-	Description:   "Nice Display View Experience is amazing",
-	Category:      "Laptops",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-31",
-	AmountPerDay:  1000,
-	UserId:        3,
-}
-
-var Item3 = rental.Item{
-	Name:          "Iqoo Neo 6",
-	Description:   "Phone is Superfast and Display is just amazing",
-	Category:      "Mobile Phones",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-03",
-	AmountPerDay:  300,
-	UserId:        1,
-}
-
-var Item4 = rental.Item{
-	Name:          "Asus Zenbook 14",
-	Description:   "Display is just amazing",
-	Category:      "Laptops",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-31",
-	AmountPerDay:  1000,
-	UserId:        3,
-}
 
 //Data for mock call
 
+var mockItems = []models.Item{
+	mockItem1,
+	mockItem2,
+	mockItem3,
+	mockItem4,
+}
+
 //Data for Actual Call
+
+var Items = []rental.Item{
+	Item1,
+	Item2,
+	Item3,
+	Item4,
+}
 
 //Booking Data
 
@@ -200,6 +262,20 @@ var mockReview2 = models.Review{
 	ItemId:   1000,
 }
 
+var mockReview3 = models.Review{
+	Comments: "The Phone is too good",
+	Rating:   4,
+	UserId:   1,
+	ItemId:   10,
+}
+
+var mockReview4 = models.Review{
+	Comments: "The Laptop is very nice",
+	Rating:   4,
+	UserId:   1,
+	ItemId:   1,
+}
+
 // Data for Actual Call
 var Review1 = rental.Review{
 	Comment: "The Phone is too good",
@@ -215,51 +291,21 @@ var Review2 = rental.Review{
 	ItemId:  1000,
 }
 
+var Review3 = rental.Review{
+	Comment: "The Phone is too good",
+	Rating:  4,
+	UserId:  1,
+	ItemId:  10,
+}
+
+var Review4 = rental.Review{
+	Comment: "The Laptop is very nice",
+	Rating:  4,
+	UserId:  1,
+	ItemId:  1,
+}
+
 //Searching
-
-var Item5 = rental.Item{
-	Id:            5,
-	Name:          "Iqoo Neo 6",
-	Description:   "Phone is Superfast and Display is just amazing",
-	Category:      "Mobile Phones",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-03",
-	AmountPerDay:  500,
-	UserId:        1,
-}
-
-var Item6 = rental.Item{
-	Id:            6,
-	Name:          "Asus Zenbook 14 OLED",
-	Description:   "Nice Display View Experience is amazing",
-	Category:      "Laptops",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-31",
-	AmountPerDay:  1000,
-	UserId:        3,
-}
-
-var Item7 = rental.Item{
-	Id:            7,
-	Name:          "Iqoo Neo 6",
-	Description:   "Phone is Superfast and Display is just amazing",
-	Category:      "Mobile Phones",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-03",
-	AmountPerDay:  300,
-	UserId:        1,
-}
-
-var Item8 = rental.Item{
-	Id:            8,
-	Name:          "Asus Zenbook 14",
-	Description:   "Display is just amazing",
-	Category:      "Laptops",
-	AvailableFrom: "2023-01-01",
-	AvailableTo:   "2023-01-31",
-	AmountPerDay:  1000,
-	UserId:        3,
-}
 
 // Data for mock call
 var req1 = rental.ItemRequest{
@@ -267,7 +313,7 @@ var req1 = rental.ItemRequest{
 }
 
 var req2 = rental.ItemRequest{
-	Category: 2,
+	Category: 1,
 }
 
 var search1 = []models.Item{

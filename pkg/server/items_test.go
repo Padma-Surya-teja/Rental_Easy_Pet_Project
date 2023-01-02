@@ -2,6 +2,9 @@ package server
 
 import (
 	"context"
+	"errors"
+	"io"
+	"log"
 	"reflect"
 	"testing"
 	"time"
@@ -197,4 +200,160 @@ func TestDeleteItem(t *testing.T) {
 		t.Errorf("The Function Retured is not expected one. got %v expected %v",
 			got, expected)
 	}
+}
+
+func TestGetAllItems(t *testing.T) {
+	cases := []struct {
+		description string
+		input       []models.Item
+		req         rental.ItemRequest
+		err         error
+		want        []rental.Item
+	}{
+		{
+			description: "Success Case : When all Items are retrived",
+			input:       mockItems,
+			req:         rental.ItemRequest{Request: "Get All Items"},
+			err:         nil,
+			want:        Items,
+		},
+		{
+			description: "Success Case : With all Items are not retrived",
+			input:       []models.Item{},
+			req:         rental.ItemRequest{Request: "Get All Items"},
+			err:         errors.New("record not found"),
+			want:        []rental.Item{},
+		},
+	}
+
+	controller := gomock.NewController(t)
+
+	defer controller.Finish()
+
+	mockDb := mocks.NewMockDataBase(controller)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	//Client
+	c, closer := MockServer(mockDb, ctx)
+	defer closer()
+
+	for _, tt := range cases {
+		t.Run(tt.description, func(t *testing.T) {
+			mockDb.EXPECT().GetItems().Return(tt.input, tt.err)
+			stream, err := c.GetAllItems(ctx, &tt.req)
+			utils.CheckErr(err)
+
+			for _, expected := range tt.want {
+				got, err := stream.Recv()
+
+				if err == io.EOF {
+					log.Printf("finished")
+					return
+				}
+				utils.CheckErr(err)
+
+				if !reflect.DeepEqual(got, &expected) {
+					t.Errorf("The Function Retured is not expected one. got %v expected %v",
+						got, &expected)
+				}
+			}
+		})
+	}
+
+}
+
+func TestUserLeasedItems(t *testing.T) {
+	cases := []struct {
+		description   string
+		input         rental.User
+		mockitems     []models.Item
+		err           error
+		expectedError error
+		want          []rental.Item
+	}{
+		{
+			description:   "Success Case : When all Items are retrived",
+			input:         rental.User{Id: 1},
+			mockitems:     []models.Item{mockItem1, mockItem3},
+			err:           nil,
+			expectedError: nil,
+			want:          []rental.Item{Item1, Item3},
+		},
+		{
+			description:   "Success Case : With all Items are not retrived",
+			input:         rental.User{Id: 100},
+			mockitems:     []models.Item{},
+			err:           errors.New("record not found"),
+			expectedError: errors.New("record not found"),
+			want:          []rental.Item{},
+		},
+	}
+
+	controller := gomock.NewController(t)
+
+	defer controller.Finish()
+
+	mockDb := mocks.NewMockDataBase(controller)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	//Client
+	c, closer := MockServer(mockDb, ctx)
+	defer closer()
+
+	t.Run(cases[0].description, func(t *testing.T) {
+		mockDb.EXPECT().GetItemsofOwner(int(cases[0].input.Id)).Return(cases[0].mockitems, cases[0].err)
+		stream, err := c.GetUserLeasedItems(ctx, &cases[0].input)
+		utils.CheckErr(err)
+		if err != nil {
+			if !(errors.Is(cases[0].err, cases[0].expectedError)) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					cases[0].err, cases[0].expectedError)
+			}
+		}
+
+		for _, expected := range cases[0].want {
+			got, err := stream.Recv()
+
+			if err == io.EOF {
+				log.Printf("finished")
+				return
+			}
+			utils.CheckErr(err)
+
+			if !reflect.DeepEqual(got, &expected) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					got, &expected)
+			}
+		}
+	})
+
+	t.Run(cases[1].description, func(t *testing.T) {
+		// mockDb.EXPECT().GetItemsofOwner(cases[1].input.Id).Return(cases[1].mockitems, cases[1].err)
+		stream, err := c.GetUserLeasedItems(ctx, &cases[1].input)
+		utils.CheckErr(err)
+		if err != nil {
+			if !(errors.Is(cases[1].err, cases[1].expectedError)) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					cases[1].err, cases[1].expectedError)
+			}
+		}
+
+		for _, expected := range cases[1].want {
+			got, err := stream.Recv()
+
+			if err == io.EOF {
+				log.Printf("finished")
+				return
+			}
+			utils.CheckErr(err)
+
+			if !reflect.DeepEqual(got, &expected) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					got, &expected)
+			}
+		}
+	})
+
 }

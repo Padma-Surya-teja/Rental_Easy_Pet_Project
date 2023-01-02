@@ -13,7 +13,7 @@ func SearchItems(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context
 	log.Println("Client : Searching The Items")
 
 	req := rental.ItemRequest{
-		Request: "IqooNeo6",
+		Category: 1,
 	}
 	stream, err := c.SearchItems(ctx, &req)
 	utils.CheckErr(err)

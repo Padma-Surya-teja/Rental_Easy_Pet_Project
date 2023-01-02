@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net"
 	"time"
@@ -16,7 +15,7 @@ import (
 
 // declaring the port number
 const (
-	port = "localhost:8080"
+	port = ":54321"
 )
 
 func checkErr(err error) {
@@ -50,11 +49,7 @@ func accessibleRoles() map[string][]string {
 }
 
 func main() {
-	//Using command line flags to connect with the database
-	db_user := flag.String("user", "postgres", "database user")
-	db_password := flag.String("password", "root", "database password")
-	db_name := flag.String("name", "Rental_Easy", "database name")
-	db := models.SetupDB(db_user, db_password, db_name)
+	db := models.SetupDB()
 
 	listener, err := net.Listen("tcp", port)
 	checkErr(err)

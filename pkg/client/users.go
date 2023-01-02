@@ -14,7 +14,7 @@ func CreateNewUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Conte
 	user, err := c.CreateUser(ctx, &rental.User{})
 	utils.CheckErr(err)
 
-	if user == nil || user.Id == 0 {
+	if user == nil {
 		log.Fatalf("Please Enter all values in the database")
 	}
 	if err != nil {
@@ -26,7 +26,7 @@ func CreateNewUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Conte
 
 func GetUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
 	log.Println("Client : Getting a User From Client Side")
-	user, err := c.GetUser(ctx, &rental.User{Id: 1})
+	user, err := c.GetUser(ctx, &rental.User{Id: 23})
 	utils.CheckErr(err)
 
 	if err == nil {
@@ -36,8 +36,8 @@ func GetUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
 
 func UpdateUser(c rental.Rental_Easy_FunctionalitiesClient, ctx context.Context) {
 	log.Println("Client : Updating a User From Client Side")
-	User1.Id = 1
-	user, err := c.UpdateUser(ctx, &User1)
+	User2.Id = 2
+	user, err := c.UpdateUser(ctx, &User2)
 	utils.CheckErr(err)
 
 	if err == nil {

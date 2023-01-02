@@ -61,9 +61,10 @@ message Item {
 message ItemRequest {
     string Request = 1;
     enum Category {
-        MobilePhones = 0;
-        Laptops = 1;
-        Accessories = 2;
+        No = 0;
+        MobilePhones = 1;
+        Laptops = 2;
+        Accessories = 3;
     }
     Category category = 2;
     string Status = 3;

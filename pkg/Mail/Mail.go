@@ -27,7 +27,7 @@ func BookingConfirmationMail(email, item_name, start_date, end_date string, e ch
 
 	url := "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
 
-	senderEmail := GoDotEnvVariable("SENDEREMAIL")
+	senderEmail := utils.GoDotEnvVariable("SENDEREMAIL")
 
 	mail := fmt.Sprintf(`{
 	    "personalizations": [
@@ -56,7 +56,7 @@ func BookingConfirmationMail(email, item_name, start_date, end_date string, e ch
 	utils.CheckErr(err)
 
 	req.Header.Add("content-type", "application/json")
-	req.Header.Add("X-RapidAPI-Key", GoDotEnvVariable("RAPIDAPIKEY"))
+	req.Header.Add("X-RapidAPI-Key", utils.GoDotEnvVariable("RAPIDAPIKEY"))
 	req.Header.Add("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
 
 	res, err := http.DefaultClient.Do(req)

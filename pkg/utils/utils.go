@@ -3,8 +3,12 @@ package utils
 import (
 	"errors"
 	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 func CheckErr(err error) {
@@ -29,4 +33,15 @@ func ConvertToInt(array []string) []int {
 
 func DateFromTimeStamp(timestamp string) string {
 	return strings.Split(timestamp, " ")[0]
+}
+
+// use godot package to load/read the .env file and
+// return the value of the key
+func GoDotEnvVariable(key string) string {
+
+	// load .env file
+	err := godotenv.Load(filepath.Join(`/home/suryatejap/Documents/Go Lang Practice/RENTAL EASY V-1 (copy)/`, ".env"))
+	CheckErr(err)
+
+	return os.Getenv(key)
 }

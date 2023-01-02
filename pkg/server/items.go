@@ -15,6 +15,9 @@ import (
 func (s *ServerSideImplementation) CreateItem(ctx context.Context, in *rental.Item) (*rental.Item, error) {
 	log.Printf("Server : Creating a new Item")
 
+	if in == nil || in.UserId == 0 {
+		return &rental.Item{}, errors.New("please provide proper details")
+	}
 	Avail_From := utils.ConvertToInt(strings.Split(in.GetAvailableFrom(), "-"))
 	Avail_To := utils.ConvertToInt(strings.Split(in.GetAvailableTo(), "-"))
 
@@ -115,6 +118,8 @@ func (s *ServerSideImplementation) UpdateItem(ctx context.Context, in *rental.It
 }
 
 func (s *ServerSideImplementation) GetUserLeasedItems(in *rental.User, stream rental.Rental_Easy_Functionalities_GetUserLeasedItemsServer) error {
+	log.Println("Getting the Owner Leased Items")
+
 	items, err := s.Db.GetItemsofOwner(int(in.GetId()))
 	utils.CheckErr(err)
 	if err != nil {

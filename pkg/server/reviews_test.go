@@ -3,9 +3,11 @@ package server
 import (
 	"context"
 	"errors"
+	"io"
 	"log"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"rental_easy.in/m/pkg/database/mocks"
@@ -208,4 +210,98 @@ func TestDeleteReview(t *testing.T) {
 		t.Errorf("The Function Retured is not expected one. got %v expected %v",
 			got, expected)
 	}
+}
+
+func TestGetAllReviews(t *testing.T) {
+	cases := []struct {
+		description   string
+		input         rental.Item
+		mockreviews   []models.Review
+		err           error
+		want          []rental.Review
+		expectedError error
+	}{
+		{
+			description:   "Success Case : When Reviews are retrived",
+			input:         rental.Item{Id: 1},
+			mockreviews:   []models.Review{mockReview3, mockReview4},
+			err:           nil,
+			want:          []rental.Review{Review3, Review4},
+			expectedError: nil,
+		},
+		{
+			description:   "Failure Case : When reviews are failed",
+			input:         rental.Item{Id: 100},
+			mockreviews:   []models.Review{},
+			err:           errors.New("record not found"),
+			want:          []rental.Review{},
+			expectedError: errors.New("record not found"),
+		},
+	}
+
+	controller := gomock.NewController(t)
+
+	defer controller.Finish()
+
+	mockDb := mocks.NewMockDataBase(controller)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	//Client
+	c, closer := MockServer(mockDb, ctx)
+	defer closer()
+
+	t.Run(cases[0].description, func(t *testing.T) {
+		mockDb.EXPECT().GetReviews(int(cases[0].input.Id)).Return(cases[0].mockreviews, cases[0].err)
+		stream, err := c.GetAllReviews(ctx, &cases[0].input)
+		utils.CheckErr(err)
+		if err != nil {
+			if !(errors.Is(cases[0].err, cases[0].expectedError)) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					cases[0].err, cases[0].expectedError)
+			}
+		}
+
+		for _, expected := range cases[0].want {
+			got, err := stream.Recv()
+
+			if err == io.EOF {
+				log.Printf("finished")
+				return
+			}
+			utils.CheckErr(err)
+
+			if !reflect.DeepEqual(got, &expected) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					got, &expected)
+			}
+		}
+	})
+	t.Run(cases[1].description, func(t *testing.T) {
+		// mockDb.EXPECT().GetReviews(int(cases[1].input.Id)).Return(cases[1].mockreviews, cases[1].err)
+		stream, err := c.GetAllReviews(ctx, &cases[1].input)
+		utils.CheckErr(err)
+		if err != nil {
+			if !(errors.Is(cases[1].err, cases[1].expectedError)) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					cases[1].err, cases[1].expectedError)
+			}
+		}
+
+		for _, expected := range cases[1].want {
+			got, err := stream.Recv()
+
+			if err == io.EOF {
+				log.Printf("finished")
+				return
+			}
+			utils.CheckErr(err)
+
+			if !reflect.DeepEqual(got, &expected) {
+				t.Errorf("The Function Retured is not expected one. got %v expected %v",
+					got, &expected)
+			}
+		}
+	})
+
 }

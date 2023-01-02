@@ -35,18 +35,18 @@ func (m *MockDataBase) EXPECT() *MockDataBaseMockRecorder {
 }
 
 // AddBooking mocks base method.
-func (m *MockDataBase) AddBooking(arg0 models.Booking) (models.Booking, error) {
+func (m *MockDataBase) AddBooking(arg0 models.Booking, arg1 models.Item) (models.Booking, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddBooking", arg0)
+	ret := m.ctrl.Call(m, "AddBooking", arg0, arg1)
 	ret0, _ := ret[0].(models.Booking)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddBooking indicates an expected call of AddBooking.
-func (mr *MockDataBaseMockRecorder) AddBooking(arg0 interface{}) *gomock.Call {
+func (mr *MockDataBaseMockRecorder) AddBooking(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddBooking", reflect.TypeOf((*MockDataBase)(nil).AddBooking), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddBooking", reflect.TypeOf((*MockDataBase)(nil).AddBooking), arg0, arg1)
 }
 
 // AddItem mocks base method.

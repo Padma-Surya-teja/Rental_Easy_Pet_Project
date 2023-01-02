@@ -14,7 +14,7 @@ type DataBase interface {
 	GetItemById(int) (models.Item, error)
 	UpdateItem(item models.Item) (int, error)
 	GetItemsofOwner(int) ([]models.Item, error)
-	AddBooking(models.Booking) (models.Booking, error)
+	AddBooking(models.Booking, models.Item) (models.Booking, error)
 	GetBookings(int) ([]models.Booking, error)
 	UserAlreadyBooked(int, int) (bool, error)
 	AddReview(models.Review) (int, error)
@@ -27,7 +27,6 @@ type DataBase interface {
 	GetItemName(int) (string, error)
 	SearchItems(string, string) ([]models.Item, error)
 }
-
 type DBClient struct {
 	Db *gorm.DB
 }
