@@ -2,93 +2,94 @@ syntax = "proto3";
 
 package rentalmgmt;
 
+//https://stackoverflow.com/questions/7946370/protocol-buffer-how-to-define-date-type
+
 option go_package = "rental_easy.in/m/rentalmgmt";
 
 service Rental_Easy_Functionalities {
-    rpc CreateUser(NewUser) returns (UserId) {}
-    rpc CreateItem(NewItem) returns (ItemId) {}
-    rpc GetAllItems(Request) returns (Items) {}
-    rpc GetItem(ItemId) returns (DetailedItem) {}
-    rpc UpdateItem(DetailedItem) returns (ItemId) {}
-    // rpc GetAvailableDatesofItem(ItemId) returns (AvailableDates) {}
-    // rpc ListAllItems(Request) returns (Items) {}
+    rpc CreateUser(User) returns (User) {}
+    rpc GetUser(User) returns (User) {}
+    rpc UpdateUser(User) returns (User) {}
+    rpc CreateItem(Item) returns (Item) {}
+    rpc GetAllItems(ItemRequest) returns (stream Item) {}
+    rpc GetItemById(Item) returns (Item) {}
+    rpc UpdateItem(Item) returns (Item) {}
+    rpc DeleteItem(Item) returns (Item) {}
+    rpc GetUserLeasedItems(User) returns (stream Item) {}
+    rpc BookItem(Booking) returns (Booking) {}
+    rpc GetUserBookedItems(User) returns (stream Booking) {}
+    rpc AddReview(Review) returns (Review) {}
+    rpc UpdateReview(Review) returns (Review) {}
+    rpc DeleteReview(Review) returns (Review) {}
+    rpc GetAllReviews(Item) returns (stream Review) {}
+    rpc SearchItems(ItemRequest) returns (stream Item) {}
 }
 
 
+
+//USER'S SIDE
 //Create New User
-message NewUser {
-    string Name = 1;
-    string Email = 2;
-    string Phone_Number = 3;
-    string Address = 4;
-    string District = 5;
-    string Postal_Code = 6;
-    string Country = 7;
-}
-
-//Create New Item
-message NewItem {
-    string Name = 1;
-    string Description = 2;
-    string Category = 3;
-    string Available_From = 4;
-    string Available_To = 5;
-    int32 Amount_per_day = 6;
-    int32 UserID = 7;
-}
-
-//Get the Item Id
-message ItemId {
-    int32 id = 1;
-}
-
-//Get a Particular Item with all Details
-message DetailedItem {
-    int32 ID = 1;
-    string Name = 2;
-    string Description = 3;
-    string Category = 4;
-    string Available_From = 5;
-    string Available_To = 6;
-    int32 Amount_per_day = 7;
-    int32 UserID = 8;
-}
-
-//Get the User Id
-message UserId {
-    int32 id = 1;
-}
-
-//To Show the Available Dates
-message AvailableDates {
-    string Available_From = 1;
-    string Available_To = 2;
-}
-
-//For Displaying Each Item to User
-message Item {
-    int32 id = 1;
-    string Name = 2;
-    string Description = 3;
-    int32 Amount_per_day = 4;
-}
-
-//For Listing all the Items
-message Items {
-    repeated Item items=1;
-}
-//For Requesting
-message Request {
-    string request = 1;
-}
-
-message Profile {
+message User {
     int32 Id = 1;
     string Name = 2;
     string Email = 3;
-    string Phone_Number = 4;
+    string PhoneNumber = 4;
     string Address = 5;
     string District = 6;
-    string Postal_Code = 7;
+    string PostalCode = 7;
     string Country = 8;
+    string Status = 9;
 }
+
+
+//Get a Particular Item with all Details
+message Item {
+    int32 Id = 1;
+    string Name = 2;
+    string Description = 3;
+    string Category = 4;
+    string AvailableFrom = 5;
+    string AvailableTo = 6;
+    int32 AmountPerDay = 7;
+    int32 UserId = 8;
+    string Status = 9;
+}
+
+
+//REQUEST AND RESPONSE
+//For Requesting
+message ItemRequest {
+    string Request = 1;
+    enum Category {
+        No = 0;
+        MobilePhones = 1;
+        Laptops = 2;
+        Accessories = 3;
+    }
+    Category category = 2;
+    string Status = 3;
+}
+//BOOKING RELATED
+//To Show the Booked Items
+message Booking {
+    int32 Id = 1;
+    string ItemName = 2;
+    string StartDate = 3;
+    string EndDate = 4;
+    int32 TotalAmount = 5;
+    int32 UserId = 6;
+    int32 ItemId = 7;
+    string Status = 8;
+}
+
+//REVIEWS RELATED
+
+message Review {
+    int32 Id = 1;
+    string Comment = 2;
+    int32 Rating = 3;
+    int32 UserId = 4;
+    int32 ItemId = 5;
+    string Status = 6;
+}
+

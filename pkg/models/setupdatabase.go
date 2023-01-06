@@ -1,17 +1,19 @@
 package models
 
 import (
+	"log"
+
 	gorm "github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	"rental_easy.in/m/pkg/utils"
 )
 
-func SetupDB(db_user *string, db_password *string, db_name *string) *gorm.DB {
-	database_link := "user=" + *db_user + " password=" + *db_password + " dbname=" + *db_name + " sslmode=disable"
+func SetupDB() *gorm.DB {
 
-	db, err := gorm.Open("postgres", database_link)
-	if err != nil {
-		panic(err.Error())
-	}
+	db, err := gorm.Open("postgres", utils.GoDotEnvVariable("DATABASE_URL"))
+
+	utils.CheckErr(err)
+	log.Println(utils.GoDotEnvVariable("DATABASE_URL"))
 
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Item{})
